@@ -1,0 +1,48 @@
+{
+  "expo": {
+    "name": "Z3 Partner",
+    "slug": "z3-partner",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#121212"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.julfo.z3partner",
+      "infoPlist": {
+        "NSCameraUsageDescription": "Cette application nécessite l'accès à l'appareil photo pour scanner vos factures d'entretien.",
+        "NSLocationWhenInUseUsageDescription": "L'application utilise le GPS pour suivre vos trajets et recommander l'ajout de kilométrage ou de pleins d'essence.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "L'application utilise le GPS en arrière-plan pour détecter vos arrêts à la station-service."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#121212"
+      },
+      "package": "com.julfo.z3partner"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "L'application a besoin du GPS pour la détection de trajets."
+        }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "L'application a besoin de l'appareil photo pour scanner les factures."
+        }
+      ]
+    ]
+  }
+}
