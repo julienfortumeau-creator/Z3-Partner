@@ -15,6 +15,7 @@ export interface VehicleProfile {
   purchasePrice: number;
   acquisitionDate: string;
   isCoupé: boolean;
+  insuranceCost: number;
 }
 
 interface VehicleState {
@@ -34,6 +35,7 @@ const demoProfile: VehicleProfile = {
   purchasePrice: 22000,
   acquisitionDate: '2023-01-15',
   isCoupé: true,
+  insuranceCost: 650,
 };
 
 const demoExpenses: Expense[] = [

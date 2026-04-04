@@ -15,7 +15,7 @@ import { useVehicleStore } from '../store/useVehicleStore';
 import { colors, spacing, typography } from '../theme/colors';
 import { PremiumButton } from '../components/common/PremiumButton';
 import { GlassCard } from '../components/common/GlassCard';
-import { Car, Calendar, Gauge, Euro, User } from 'lucide-react-native';
+import { Car, Calendar, Gauge, Euro, User, Shield } from 'lucide-react-native';
 
 export default function OnboardingScreen() {
   const navigation = useNavigation<any>();
@@ -26,6 +26,7 @@ export default function OnboardingScreen() {
     year: '2001',
     mileage: '124000',
     price: '18500',
+    insurance: '600',
     acquisitionDate: '2023-05-15',
   });
 
@@ -35,6 +36,7 @@ export default function OnboardingScreen() {
       year: form.year,
       mileage: parseInt(form.mileage),
       purchasePrice: parseInt(form.price),
+      insuranceCost: parseInt(form.insurance),
       acquisitionDate: form.acquisitionDate,
       isCoupé: form.model.toLowerCase().includes('coupé'),
     });
@@ -99,6 +101,13 @@ export default function OnboardingScreen() {
               onChange={(t: string) => setForm({...form, price: t})}
               icon={Euro}
               placeholder="ex: 15000"
+            />
+            <InputField 
+              label="Coût Assurance Annuel (€)" 
+              value={form.insurance} 
+              onChange={(t: string) => setForm({...form, insurance: t})}
+              icon={Shield}
+              placeholder="ex: 600"
             />
           </GlassCard>
 

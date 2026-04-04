@@ -93,7 +93,7 @@ export default function DashboardScreen() {
           <GlassCard style={styles.halfCard}>
             <StatItem 
               label="Assurance" 
-              value="À jour" 
+              value={`${profile.insuranceCost.toLocaleString()} € / an`} 
               icon={Shield} 
               color={colors.success}
             />
