@@ -53,7 +53,9 @@ export default function AddExpenseScreen() {
   }, [expense, profile?.mileage, initialCategory]);
 
   const onDateChange = (event: any, selectedDate?: Date) => {
-    setShowDatePicker(Platform.OS === 'ios');
+    if (Platform.OS === 'android') {
+      setShowDatePicker(false);
+    }
     if (selectedDate) {
       setDate(selectedDate.toISOString().split('T')[0]);
     }
@@ -179,7 +181,7 @@ export default function AddExpenseScreen() {
                   <DateTimePicker
                     value={new Date(date)}
                     mode="date"
-                    display="default"
+                    display={Platform.OS === 'ios' ? 'spinner' : 'default'}
                     onChange={onDateChange}
                     maximumDate={new Date()}
                   />

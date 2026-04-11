@@ -18,7 +18,7 @@ import { GlassPicker } from '../components/common/GlassPicker';
 import { InputField } from '../components/common/InputField';
 import { WearItem } from '../components/common/WearItem';
 import { Z3_MODELS, Z3_YEARS } from '../constants/vehicleData';
-import { Car, Calendar, Gauge, Euro, Shield, Disc, Thermometer, Zap, ChevronLeft } from 'lucide-react-native';
+import { Car, Calendar, Gauge, Euro, Shield, Disc, Thermometer, Zap, ChevronLeft, Aperture } from 'lucide-react-native';
 
 export default function OnboardingScreen() {
   const navigation = useNavigation<any>();
@@ -73,7 +73,7 @@ export default function OnboardingScreen() {
       >
         <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
           <View style={styles.header}>
-            <Car size={64} color={colors.primary} />
+            <Aperture size={64} color={colors.primary} />
             <Text style={styles.title}>Z3 Partner</Text>
             <Text style={styles.subtitle}>
               {step === 1 ? 'Configurez votre véhicule' : 'Santé du véhicule'}

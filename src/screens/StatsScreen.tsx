@@ -129,6 +129,15 @@ export default function StatsScreen() {
           <FilterButton type="all" label="Tout" />
         </View>
 
+        <GlassCard style={styles.highlightCard}>
+          <StatSummary 
+            label="Coût au Kilomètre" 
+            customValue={costPerKm ? `${costPerKm} €/km` : "--"}
+            icon={TrendingUp} 
+            color={colors.success}
+          />
+        </GlassCard>
+
         <GlassCard style={styles.chartCard}>
           <View style={styles.chartHeader}>
             <PieIcon size={20} color={colors.primary} />
@@ -214,14 +223,6 @@ export default function StatsScreen() {
               color={colors.warning}
             />
           </GlassCard>
-          <GlassCard style={styles.summaryCard}>
-            <StatSummary 
-              label="Coût au Km" 
-              customValue={costPerKm ? `${costPerKm} €/km` : "--"}
-              icon={TrendingUp} 
-              color={colors.success}
-            />
-          </GlassCard>
         </View>
 
       </ScrollView>
@@ -271,6 +272,12 @@ const styles = StyleSheet.create({
   chartCard: {
     marginBottom: spacing.lg,
     padding: spacing.md,
+  },
+  highlightCard: {
+    marginBottom: spacing.lg,
+    padding: spacing.xl,
+    borderColor: colors.success + '40',
+    borderWidth: 1,
   },
   chartHeader: {
     flexDirection: 'row',
