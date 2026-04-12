@@ -11,10 +11,12 @@ interface PremiumButtonProps {
   style?: ViewStyle;
   textStyle?: TextStyle;
   icon?: any;
+  disabled?: boolean;
 }
 
-export const PremiumButton = ({ title, onPress, variant = 'primary', style, textStyle, icon: Icon }: PremiumButtonProps) => {
+export const PremiumButton = ({ title, onPress, variant = 'primary', style, textStyle, icon: Icon, disabled }: PremiumButtonProps) => {
   const handlePress = () => {
+    if (disabled) return;
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     onPress();
   };
@@ -27,7 +29,11 @@ export const PremiumButton = ({ title, onPress, variant = 'primary', style, text
   };
 
   return (
-    <TouchableOpacity onPress={handlePress} style={[styles.button, isOutline && styles.outlineButton, style]}>
+    <TouchableOpacity 
+      onPress={handlePress} 
+      style={[styles.button, isOutline && styles.outlineButton, style, disabled && { opacity: 0.5 }]}
+      disabled={disabled}
+    >
       <LinearGradient
         colors={colorsMap[variant]}
         start={{ x: 0, y: 0 }}

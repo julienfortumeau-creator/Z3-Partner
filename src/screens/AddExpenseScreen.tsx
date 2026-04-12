@@ -14,7 +14,7 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { useVehicleStore, Expense } from '../store/useVehicleStore';
 import { colors, spacing, typography } from '../theme/colors';
 import { GlassCard } from '../components/common/GlassCard';
-import { Wrench, Fuel, Sparkles, MoreHorizontal, ChevronLeft, Save, Trash2, Calendar } from 'lucide-react-native';
+import { Wrench, Fuel, Sparkles, MoreHorizontal, ChevronLeft, Save, Trash2, Calendar, ScanLine } from 'lucide-react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 type Category = 'maintenance' | 'fuel' | 'aesthetic' | 'other';
@@ -138,7 +138,12 @@ export default function AddExpenseScreen() {
           <Text style={styles.title}>
             {expense ? 'Modifier l\'élément' : 'Ajouter un entretien'}
           </Text>
-          <View style={{ width: 28 }} />
+          <TouchableOpacity 
+            onPress={() => alert("Lancement du Scanner IA...")} 
+            style={styles.scanButtonHeader}
+          >
+            <ScanLine color={colors.primary} size={24} />
+          </TouchableOpacity>
         </View>
 
         <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
@@ -378,5 +383,11 @@ const styles = StyleSheet.create({
     color: '#FFF',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  scanButtonHeader: {
+    width: 44,
+    height: 44,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

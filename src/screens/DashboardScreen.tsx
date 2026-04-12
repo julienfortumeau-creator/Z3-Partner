@@ -27,8 +27,7 @@ export default function DashboardScreen() {
       const data = response.notification.request.content.data;
       
       if (data.type === 'mileage_update') {
-        setSuggestedKms(data.suggestedKms || 0);
-        setMileageModalVisible(true);
+        navigation.navigate('AddMileage');
       } else if (data.type === 'fuel_add') {
         navigation.navigate('AddExpense', { initialCategory: 'fuel' });
       }
@@ -131,10 +130,15 @@ export default function DashboardScreen() {
         </View>
 
         <GlassCard style={styles.mainCard} variant="glass">
-          <View style={styles.mileageSection}>
+          <TouchableOpacity 
+            style={styles.mileageSection} 
+            onPress={() => navigation.navigate('AddMileage')}
+            activeOpacity={0.7}
+          >
             <Text style={styles.mileageLabel}>Kilométrage Actuel</Text>
             <Text style={styles.mileageValue}>{currentMileage.toLocaleString()} km</Text>
-          </View>
+            <Text style={styles.mileageAction}>Mettre à jour {'>'}</Text>
+          </TouchableOpacity>
 
           <View style={styles.divider} />
 
@@ -256,6 +260,13 @@ const styles = StyleSheet.create({
   mileageValue: {
     ...typography.h1,
     color: colors.textPrimary,
+  },
+  mileageAction: {
+    fontSize: 10,
+    color: colors.primary,
+    fontWeight: '700',
+    marginTop: 4,
+    textTransform: 'uppercase',
   },
   statusBadge: {
     flexDirection: 'row',

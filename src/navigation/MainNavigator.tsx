@@ -6,14 +6,16 @@ import { View, ActivityIndicator } from 'react-native';
 
 import DashboardScreen from '../screens/DashboardScreen';
 import HistoryScreen from '../screens/HistoryScreen';
-import ScannerScreen from '../screens/ScannerScreen';
+import DriveScreen from '../screens/DriveScreen';
 import StatsScreen from '../screens/StatsScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import OnboardingScreen from '../screens/OnboardingScreen';
 import EditProfileScreen from '../screens/EditProfileScreen';
 import SupportScreen from '../screens/SupportScreen';
 import AddExpenseScreen from '../screens/AddExpenseScreen';
+import AddMileageScreen from '../screens/AddMileageScreen';
 import { colors } from '../theme/colors';
+import { SteeringWheel } from '../components/icons/SteeringWheel';
 import { useVehicleStore } from '../store/useVehicleStore';
 
 export type RootStackParamList = {
@@ -22,12 +24,13 @@ export type RootStackParamList = {
   EditProfile: undefined;
   Support: undefined;
   AddExpense: { expense?: any, initialCategory?: any };
+  AddMileage: undefined;
 };
 
 export type TabParamList = {
   Dashboard: undefined;
   History: undefined;
-  Scan: undefined;
+  Drive: undefined;
   Stats: undefined;
   Settings: undefined;
 };
@@ -72,11 +75,11 @@ function TabNavigator() {
         }}
       />
       <Tab.Screen 
-        name="Scan" 
-        component={ScannerScreen} 
+        name="Drive" 
+        component={DriveScreen} 
         options={{
-          tabBarLabel: 'Scanner',
-          tabBarIcon: ({ color, size }) => <ScanLine color={color} size={size} />
+          tabBarLabel: 'Drive',
+          tabBarIcon: ({ color, size }) => <SteeringWheel color={color} size={size} />
         }}
       />
       <Tab.Screen 
@@ -121,6 +124,7 @@ export default function MainNavigator() {
       <Stack.Screen name="EditProfile" component={EditProfileScreen} />
       <Stack.Screen name="Support" component={SupportScreen} />
       <Stack.Screen name="AddExpense" component={AddExpenseScreen} />
+      <Stack.Screen name="AddMileage" component={AddMileageScreen} />
     </Stack.Navigator>
   );
 }

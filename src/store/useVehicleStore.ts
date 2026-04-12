@@ -23,9 +23,18 @@ export interface VehicleProfile {
   initialWearKm: Record<string, number>; // Usure enregistrée à l'onboarding
 }
 
+export interface Trip {
+  id: string;
+  date: string;
+  distance: number;
+  mileageAtEnd: number;
+  label: string;
+}
+
 interface VehicleState {
   profile: VehicleProfile | null;
   expenses: Expense[];
+  trips: Trip[];
   _hasHydrated: boolean;
   setHasHydrated: (state: boolean) => void;
   setProfile: (profile: VehicleProfile) => void;
@@ -34,6 +43,8 @@ interface VehicleState {
   addExpense: (expense: Omit<Expense, 'id'>) => void;
   updateExpense: (id: string, updates: Partial<Expense>) => void;
   deleteExpense: (id: string) => void;
+  addTrip: (trip: Omit<Trip, 'id'>) => void;
+  deleteTrip: (id: string) => void;
   getTCO: () => number;
 }
 
@@ -42,6 +53,7 @@ export const useVehicleStore = create<VehicleState>()(
     (set, get) => ({
       profile: null,
       expenses: [],
+      trips: [],
       _hasHydrated: false,
       
       setHasHydrated: (state) => set({ _hasHydrated: state }),
@@ -72,6 +84,18 @@ export const useVehicleStore = create<VehicleState>()(
 
       deleteExpense: (id) => set((state) => ({
         expenses: state.expenses.filter(exp => exp.id !== id)
+      })),
+
+      addTrip: (trip) => {
+        const newTrip = { ...trip, id: Date.now().toString() };
+        set((state) => ({
+          trips: [newTrip, ...state.trips].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()),
+          profile: state.profile ? { ...state.profile, mileage: trip.mileageAtEnd } : null
+        }));
+      },
+
+      deleteTrip: (id) => set((state) => ({
+        trips: state.trips.filter(t => t.id !== id)
       })),
 
       getTCO: () => {
