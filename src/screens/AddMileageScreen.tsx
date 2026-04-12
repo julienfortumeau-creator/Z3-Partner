@@ -1,4 +1,4 @@
-import React, { useState, useRef, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { 
   View, 
   Text, 
@@ -6,48 +6,58 @@ import {
   SafeAreaView, 
   TouchableOpacity, 
   Dimensions,
-  FlatList,
-  Animated
+  Platform,
+  Modal,
+  FlatList
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useVehicleStore } from '../store/useVehicleStore';
 import { colors, spacing, typography } from '../theme/colors';
-import { ChevronLeft, Save, Gauge, Navigation } from 'lucide-react-native';
+import { ChevronLeft, Save, Navigation, Plus, Calendar, X, Check } from 'lucide-react-native';
 import { PremiumButton } from '../components/common/PremiumButton';
 import { GlassCard } from '../components/common/GlassCard';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import { BlurView } from 'expo-blur';
+import * as Haptics from 'expo-haptics';
 
-const { width } = Dimensions.get('window');
-const ITEM_WIDTH = 80;
-const VISIBLE_ITEMS = 5;
+const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 export default function AddMileageScreen() {
   const navigation = useNavigation<any>();
   const { profile, addTrip } = useVehicleStore();
-  const [distance, setDistance] = useState(0);
   
-  // Array of numbers for the scroller (ex: 0 to 500 km)
-  const numbers = useMemo(() => Array.from({ length: 101 }, (_, i) => i * 5), []); // 0, 5, 10, ..., 500
+  const [distance, setDistance] = useState(1);
+  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [showDistancePicker, setShowDistancePicker] = useState(false);
 
-  const handleScroll = (event: any) => {
-    const scrollX = event.nativeEvent.contentOffset.x;
-    const index = Math.round(scrollX / ITEM_WIDTH);
-    if (numbers[index] !== undefined) {
-      setDistance(numbers[index]);
+  // Array of numbers 1 to 999
+  const distanceOptions = useMemo(() => Array.from({ length: 999 }, (_, i) => i + 1), []);
+
+  const onDateChange = (event: any, selectedDate?: Date) => {
+    if (Platform.OS === 'android') {
+      setShowDatePicker(false);
+    }
+    if (selectedDate) {
+      setDate(selectedDate.toISOString().split('T')[0]);
     }
   };
 
+  const formatDateLabel = (dateString: string) => {
+    const d = new Date(dateString);
+    return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+  };
+
   const handleSave = () => {
-    if (distance === 0) return;
+    if (distance === 0 || !profile) return;
     
-    if (profile) {
-      addTrip({
-        date: new Date().toISOString(),
-        distance,
-        mileageAtEnd: profile.mileage + distance,
-        label: `Trajet du ${new Date().toLocaleDateString('fr-FR')}`,
-      });
-      navigation.goBack();
-    }
+    addTrip({
+      date: date,
+      distance,
+      mileageAtEnd: profile.mileage + distance,
+      label: `Trajet du ${formatDateLabel(date)}`,
+    });
+    navigation.goBack();
   };
 
   return (
@@ -61,70 +71,125 @@ export default function AddMileageScreen() {
       </View>
 
       <View style={styles.content}>
-        <View style={styles.currentSection}>
-          <Text style={styles.sectionLabel}>KILOMÉTRAGE ACTUEL</Text>
-          <Text style={styles.currentMileage}>
-            {profile?.mileage.toLocaleString()} <Text style={styles.unit}>KM</Text>
-          </Text>
+        {/* Kilométrage actuel */}
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionLabel}>COMPTEUR ACTUEL</Text>
+          <Text style={styles.currentValue}>{profile?.mileage.toLocaleString()} km</Text>
         </View>
 
-        <GlassCard style={styles.scrollerCard} variant="glass">
-          <Text style={styles.scrollerLabel}>DISTANCE PARCOURUE</Text>
-          
-          <View style={styles.distanceDisplay}>
-            <Text style={styles.plusSign}>+</Text>
-            <Text style={styles.distanceValue}>{distance}</Text>
-            <Text style={styles.distanceUnit}>KM</Text>
-          </View>
+        {/* Bouton d'ajout central */}
+        <View style={styles.actionContainer}>
+          <TouchableOpacity 
+            style={styles.plusButton} 
+            onPress={() => setShowDistancePicker(true)}
+            activeOpacity={0.8}
+          >
+            <Plus color="#FFF" size={40} />
+          </TouchableOpacity>
+          <Text style={styles.actionPrompt}>Ajouter des kilomètres</Text>
+        </View>
 
-          <View style={styles.scrollerContainer}>
-            <View style={styles.centerIndicator} />
-            <FlatList
-              data={numbers}
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              keyExtractor={(item) => item.toString()}
-              snapToInterval={ITEM_WIDTH}
-              decelerationRate="fast"
-              onScroll={handleScroll}
-              contentContainerStyle={{
-                paddingHorizontal: (width - ITEM_WIDTH - spacing.xl * 4) / 2
-              }}
-              renderItem={({ item }) => (
-                <View style={styles.numberItem}>
-                  <Text style={[
-                     styles.numberText,
-                     distance === item && styles.activeNumberText
-                  ]}>
-                    {item}
-                  </Text>
-                  <View style={[
-                    styles.tick,
-                    distance === item && styles.activeTick
-                  ]} />
-                </View>
-              )}
-            />
+        {/* Bloc Nouveau Compteur */}
+        <GlassCard style={styles.resultCard} variant="glass">
+          <View style={styles.resultRow}>
+            <View>
+              <Text style={styles.resultLabel}>DISTANCE AJOUTÉE</Text>
+              <Text style={styles.distanceValue}>+ {distance} km</Text>
+            </View>
+            <Navigation size={32} color={colors.primary} />
+          </View>
+          
+          <View style={styles.divider} />
+          
+          <View style={styles.resultRow}>
+            <View>
+              <Text style={styles.resultLabel}>NOUVEAU TOTAL</Text>
+              <Text style={styles.totalValue}>
+                {((profile?.mileage || 0) + distance).toLocaleString()} km
+              </Text>
+            </View>
           </View>
         </GlassCard>
 
-        <View style={styles.resultSection}>
-          <View style={styles.resultRow}>
-            <Navigation size={20} color={colors.textSecondary} />
-            <Text style={styles.resultLabel}>NOUVEAU COMPTEUR</Text>
-          </View>
-          <Text style={styles.resultValue}>
-            {( (profile?.mileage || 0) + distance).toLocaleString()} km
-          </Text>
+        {/* Sélecteur de Date */}
+        <View style={styles.dateSection}>
+          <Text style={styles.sectionLabel}>DATE DU TRAJET</Text>
+          <TouchableOpacity 
+            style={styles.dateButton} 
+            onPress={() => setShowDatePicker(true)}
+          >
+            <Calendar size={20} color={colors.primary} />
+            <Text style={styles.dateText}>{formatDateLabel(date)}</Text>
+          </TouchableOpacity>
         </View>
+
+        {showDatePicker && (
+          <DateTimePicker
+            value={new Date(date)}
+            mode="date"
+            display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+            onChange={onDateChange}
+            maximumDate={new Date()}
+          />
+        )}
 
         <PremiumButton 
           title="Enregistrer" 
           onPress={handleSave}
-          disabled={distance === 0}
           style={styles.saveButton}
         />
       </View>
+
+      {/* Modal Sélecteur KM */}
+      <Modal
+        visible={showDistancePicker}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setShowDistancePicker(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <TouchableOpacity 
+            style={styles.dismissOverlay} 
+            activeOpacity={1} 
+            onPress={() => setShowDistancePicker(false)} 
+          />
+          <BlurView intensity={80} tint="dark" style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Distance parcourue</Text>
+              <TouchableOpacity onPress={() => setShowDistancePicker(false)}>
+                <X color={colors.textSecondary} size={24} />
+              </TouchableOpacity>
+            </View>
+
+            <FlatList
+              data={distanceOptions}
+              keyExtractor={(item) => item.toString()}
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={styles.listContent}
+              getItemLayout={(data, index) => (
+                {length: 60, offset: 60 * index, index}
+              )}
+              initialScrollIndex={Math.max(0, distance - 1)}
+              renderItem={({ item }) => (
+                <TouchableOpacity 
+                  style={[styles.optionItem, distance === item && styles.optionItemActive]}
+                  onPress={() => {
+                    setDistance(item);
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                    setShowDistancePicker(false);
+                  }}
+                >
+                  <Text style={[styles.optionText, distance === item && styles.optionTextActive]}>
+                    {item} km
+                  </Text>
+                  {distance === item && <Check size={20} color={colors.primary} />}
+                </TouchableOpacity>
+              )}
+            />
+            <SafeAreaView />
+          </BlurView>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
@@ -151,10 +216,9 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     padding: spacing.xl,
-    justifyContent: 'center',
-    gap: 40,
+    gap: 30,
   },
-  currentSection: {
+  sectionHeader: {
     alignItems: 'center',
   },
   sectionLabel: {
@@ -164,113 +228,136 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
     marginBottom: spacing.xs,
   },
-  currentMileage: {
-    fontSize: 32,
-    fontWeight: '800',
-    color: colors.textPrimary,
-  },
-  unit: {
-    fontSize: 16,
-    color: colors.textSecondary,
-  },
-  scrollerCard: {
-    paddingVertical: 40,
-    alignItems: 'center',
-  },
-  scrollerLabel: {
-    fontSize: 14,
-    fontWeight: '700',
-    color: colors.primary,
-    marginBottom: spacing.xl,
-  },
-  distanceDisplay: {
-    flexDirection: 'row',
-    alignItems: 'baseline',
-    marginBottom: 40,
-  },
-  plusSign: {
+  currentValue: {
     fontSize: 24,
     fontWeight: '800',
-    color: colors.success,
-    marginRight: 4,
+    color: colors.textSecondary,
   },
-  distanceValue: {
-    fontSize: 64,
-    fontWeight: '900',
-    color: colors.textPrimary,
-    lineHeight: 64,
+  actionContainer: {
+    alignItems: 'center',
+    marginVertical: 10,
   },
-  distanceUnit: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: colors.success,
-    marginLeft: 8,
-  },
-  scrollerContainer: {
+  plusButton: {
+    width: 80,
     height: 80,
-    width: '100%',
-    position: 'relative',
-    justifyContent: 'center',
-  },
-  centerIndicator: {
-    position: 'absolute',
-    left: '50%',
-    marginLeft: -2,
-    width: 4,
-    height: 40,
+    borderRadius: 40,
     backgroundColor: colors.primary,
-    borderRadius: 2,
-    zIndex: 10,
-  },
-  numberItem: {
-    width: ITEM_WIDTH,
     alignItems: 'center',
     justifyContent: 'center',
+    shadowColor: colors.primary,
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.4,
+    shadowRadius: 15,
+    elevation: 8,
   },
-  numberText: {
-    fontSize: 16,
-    color: colors.textMuted,
-    marginBottom: 8,
-  },
-  activeNumberText: {
+  actionPrompt: {
+    marginTop: spacing.md,
     color: colors.textPrimary,
-    fontSize: 20,
-    fontWeight: '800',
+    fontWeight: '600',
+    fontSize: 16,
   },
-  tick: {
-    width: 2,
-    height: 10,
-    backgroundColor: colors.border,
-  },
-  activeTick: {
-    backgroundColor: colors.primary,
-    height: 20,
-  },
-  resultSection: {
-    alignItems: 'center',
-    backgroundColor: colors.surfaceHighlight,
-    padding: spacing.lg,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: colors.border,
+  resultCard: {
+    padding: spacing.xl,
   },
   resultRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
-    marginBottom: 4,
+    justifyContent: 'space-between',
   },
   resultLabel: {
     fontSize: 10,
     fontWeight: '700',
     color: colors.textSecondary,
+    marginBottom: 4,
   },
-  resultValue: {
-    fontSize: 24,
-    fontWeight: '800',
+  distanceValue: {
+    fontSize: 32,
+    fontWeight: '900',
+    color: colors.success,
+  },
+  totalValue: {
+    fontSize: 32,
+    fontWeight: '900',
     color: colors.textPrimary,
   },
+  divider: {
+    height: 1,
+    backgroundColor: colors.border,
+    marginVertical: spacing.lg,
+    opacity: 0.5,
+  },
+  dateSection: {
+    alignItems: 'center',
+  },
+  dateButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    marginTop: 8,
+    backgroundColor: colors.surfaceHighlight,
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 15,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  dateText: {
+    fontSize: 16,
+    color: colors.textPrimary,
+    fontWeight: '500',
+  },
   saveButton: {
-    width: '100%',
+    marginTop: 'auto',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    justifyContent: 'flex-end',
+  },
+  dismissOverlay: {
+    flex: 1,
+  },
+  modalContent: {
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+    padding: spacing.xl,
+    maxHeight: SCREEN_HEIGHT * 0.7,
+    overflow: 'hidden',
+    borderColor: colors.border,
+    borderTopWidth: 1,
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: spacing.xl,
+  },
+  modalTitle: {
+    ...typography.h2,
+    color: colors.textPrimary,
+  },
+  listContent: {
+    paddingBottom: spacing.xl,
+  },
+  optionItem: {
+    height: 60,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: spacing.md,
+    borderRadius: 15,
+    marginBottom: spacing.xs,
+  },
+  optionItemActive: {
+    backgroundColor: 'rgba(0, 102, 178, 0.2)',
+  },
+  optionText: {
+    fontSize: 20,
+    color: colors.textSecondary,
+    fontWeight: '500',
+  },
+  optionTextActive: {
+    color: colors.primary,
+    fontWeight: '800',
   },
 });
