@@ -261,8 +261,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   headerProfileImage: {
-    width: 60,
-    height: 30,
+    width: 80,
+    height: 40,
     opacity: 0.8,
   },
   appTitle: {

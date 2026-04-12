@@ -66,10 +66,9 @@ export default function AddExpenseScreen() {
     return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
   };
 
-  // Auto-fill label for fuel
   useEffect(() => {
     if (!expense && category === 'fuel' && !label) {
-      setLabel('Plein de Carburant');
+      setLabel('Plein E98/E95');
     }
   }, [category]);
 

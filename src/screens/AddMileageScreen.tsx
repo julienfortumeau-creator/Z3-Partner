@@ -15,7 +15,8 @@ import { useVehicleStore } from '../store/useVehicleStore';
 import { colors, spacing, typography } from '../theme/colors';
 import { ChevronLeft, Save, Navigation, Plus, Calendar, X, Check } from 'lucide-react-native';
 import { PremiumButton } from '../components/common/PremiumButton';
-import { GlassCard } from '../components/common/GlassCard';
+import { LinearGradient } from 'expo-linear-gradient';
+import { TextInput } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { BlurView } from 'expo-blur';
 import * as Haptics from 'expo-haptics';
@@ -27,6 +28,7 @@ export default function AddMileageScreen() {
   const { profile, addTrip } = useVehicleStore();
   
   const [distance, setDistance] = useState(0);
+  const [label, setLabel] = useState('On the road');
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showDistancePicker, setShowDistancePicker] = useState(false);
@@ -55,7 +57,7 @@ export default function AddMileageScreen() {
       date: date,
       distance,
       mileageAtEnd: profile.mileage + distance,
-      label: `Trajet du ${formatDateLabel(date)}`,
+      label: label || `Trajet du ${formatDateLabel(date)}`,
     });
     navigation.goBack();
   };
@@ -90,29 +92,50 @@ export default function AddMileageScreen() {
         </View>
 
         {/* Bloc Nouveau Compteur */}
-        <GlassCard style={styles.resultCard} variant="glass">
-          <View style={styles.resultRow}>
-            <View>
-              <Text style={styles.resultLabel}>DISTANCE AJOUTÉE</Text>
-              <Text style={styles.distanceValue}>+ {distance} km</Text>
+        <View style={styles.cardWrapper}>
+          <LinearGradient
+            colors={['#3a3a3a', '#1a1a1a']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.resultCard}
+          >
+            <View style={styles.resultRow}>
+              <View>
+                <Text style={styles.resultLabel}>DISTANCE AJOUTÉE</Text>
+                <Text style={[styles.distanceValue, distance === 0 && { color: colors.textSecondary }]}>
+                  + {distance} km
+                </Text>
+              </View>
+              <Navigation size={32} color={distance > 0 ? colors.primary : colors.textMuted} />
             </View>
-            <Navigation size={32} color={colors.primary} />
-          </View>
-          
-          <View style={styles.divider} />
-          
-          <View style={styles.resultRow}>
-            <View>
-              <Text style={styles.resultLabel}>NOUVEAU TOTAL</Text>
-              <Text style={styles.totalValue}>
-                {((profile?.mileage || 0) + distance).toLocaleString()} km
-              </Text>
+            
+            <View style={styles.divider} />
+            
+            <View style={styles.resultRow}>
+              <View>
+                <Text style={styles.resultLabel}>NOUVEAU TOTAL</Text>
+                <Text style={styles.totalValue}>
+                  {((profile?.mileage || 0) + distance).toLocaleString()} km
+                </Text>
+              </View>
             </View>
-          </View>
-        </GlassCard>
+          </LinearGradient>
+        </View>
+
+        {/* Titre du Trajet */}
+        <View style={styles.inputSection}>
+          <Text style={styles.sectionLabel}>TITRE DU TRAJET</Text>
+          <TextInput
+            style={styles.input}
+            value={label}
+            onChangeText={setLabel}
+            placeholder="Nom pour l'historique"
+            placeholderTextColor={colors.textMuted}
+          />
+        </View>
 
         {/* Sélecteur de Date */}
-        <View style={styles.dateSection}>
+        <View style={styles.inputSection}>
           <Text style={styles.sectionLabel}>DATE DU TRAJET</Text>
           <TouchableOpacity 
             style={styles.dateButton} 
@@ -228,6 +251,34 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
     marginBottom: spacing.xs,
   },
+  inputSection: {
+    alignItems: 'center',
+  },
+  input: {
+    height: 50,
+    backgroundColor: colors.surfaceHighlight,
+    borderRadius: 12,
+    paddingHorizontal: spacing.md,
+    color: colors.textPrimary,
+    fontSize: 16,
+    borderWidth: 1,
+    borderColor: colors.border,
+    width: '100%',
+    textAlign: 'center',
+    marginTop: 8,
+  },
+  dateButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    marginTop: 8,
+    backgroundColor: colors.surfaceHighlight,
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 15,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
   currentValue: {
     fontSize: 24,
     fontWeight: '800',
@@ -255,6 +306,11 @@ const styles = StyleSheet.create({
     color: colors.textPrimary,
     fontWeight: '600',
     fontSize: 16,
+  },
+  cardWrapper: {
+    borderRadius: 20,
+    overflow: 'hidden',
+    marginBottom: spacing.xl,
   },
   resultCard: {
     padding: spacing.xl,
@@ -285,21 +341,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.border,
     marginVertical: spacing.lg,
     opacity: 0.5,
-  },
-  dateSection: {
-    alignItems: 'center',
-  },
-  dateButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-    marginTop: 8,
-    backgroundColor: colors.surfaceHighlight,
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-    borderRadius: 15,
-    borderWidth: 1,
-    borderColor: colors.border,
   },
   dateText: {
     fontSize: 16,
