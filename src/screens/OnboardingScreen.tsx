@@ -19,6 +19,7 @@ import { InputField } from '../components/common/InputField';
 import { WearItem } from '../components/common/WearItem';
 import { Z3_MODELS, Z3_YEARS } from '../constants/vehicleData';
 import { Car, Calendar, Gauge, Euro, Shield, Disc, Thermometer, Zap, ChevronLeft, Aperture } from 'lucide-react-native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 export default function OnboardingScreen() {
   const navigation = useNavigation<any>();
@@ -88,7 +89,7 @@ export default function OnboardingScreen() {
                   value={form.model} 
                   options={Z3_MODELS}
                   onSelect={(val) => setForm({...form, model: val})}
-                  icon={Car}
+                  icon={(props: any) => <MaterialCommunityIcons name="piston" {...props} />}
                   placeholder="Sélectionner mon moteur..."
                 />
                 <GlassPicker 
