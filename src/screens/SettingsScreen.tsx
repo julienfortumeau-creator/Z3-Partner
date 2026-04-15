@@ -190,7 +190,7 @@ export default function SettingsScreen() {
         </GlassCard>
 
         <View style={styles.footer}>
-          <Text style={styles.versionText}>Z3 Partner v1.1.0 (Premium)</Text>
+          <Text style={styles.versionText}>Z3 Copilot v1.1.0 (Premium)</Text>
         </View>
       </ScrollView>
     </SafeAreaView>

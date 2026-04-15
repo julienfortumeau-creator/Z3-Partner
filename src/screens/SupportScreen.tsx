@@ -147,7 +147,7 @@ export default function SupportScreen() {
           <View style={styles.heartBox}>
             <Heart color={colors.error} size={16} fill={colors.error} />
           </View>
-          <Text style={styles.creditsText}>Z3 Partner v1.1.0</Text>
+          <Text style={styles.creditsText}>Z3 Copilot v1.1.0</Text>
           <Text style={styles.subCredits}>Développé par un passionné pour des passionnés</Text>
         </View>
       </ScrollView>

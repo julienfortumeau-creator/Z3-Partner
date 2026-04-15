@@ -118,7 +118,7 @@ export default function DashboardScreen() {
     <SafeAreaView style={styles.container}>
       <View style={styles.fixedHeader}>
         <View style={styles.headerRow}>
-          <Text style={styles.appTitle}>Z3 <Text style={styles.appTitleLight}>Partner</Text></Text>
+          <Text style={styles.appTitle}>Z3 <Text style={styles.appTitleLight}>Copilot</Text></Text>
           <Image 
             source={require('../../assets/z3_profile.png')} 
             style={styles.headerProfileImage}

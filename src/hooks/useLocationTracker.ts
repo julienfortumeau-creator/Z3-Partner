@@ -37,7 +37,7 @@ export const useLocationTracker = () => {
         timeInterval: 10000,
         distanceInterval: 20,
         foregroundService: {
-          notificationTitle: "Z3 Partner",
+          notificationTitle: "Z3 Copilot",
           notificationBody: "Suivi de trajet actif",
           notificationColor: "#0066b2",
         },

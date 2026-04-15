@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Z3 Partner",
-    "slug": "z3-partner",
+    "name": "Z3 Copilot",
+    "slug": "z3-copilot",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -13,7 +13,7 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.julfo.z3partner",
+      "bundleIdentifier": "com.ftmx.z3copilot",
       "infoPlist": {
         "NSCameraUsageDescription": "Cette application nécessite l'accès à l'appareil photo pour scanner vos factures d'entretien.",
         "NSLocationWhenInUseUsageDescription": "L'application utilise le GPS pour suivre vos trajets et recommander l'ajout de kilométrage ou de pleins d'essence.",
@@ -26,7 +26,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#121212"
       },
-      "package": "com.julfo.z3partner"
+      "package": "com.ftmx.z3copilot"
     },
     "plugins": [
       [

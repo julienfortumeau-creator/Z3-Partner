@@ -322,7 +322,7 @@ export default function OnboardingScreen() {
               </TouchableOpacity>
             )}
             <Aperture size={64} color={colors.primary} />
-            <Text style={styles.title}>{currentProfile ? 'Modifier Profil' : 'Z3 Partner'}</Text>
+            <Text style={styles.title}>{currentProfile ? 'Modifier Profil' : 'Z3 Copilot'}</Text>
             <View style={styles.progressContainer}>
               <View style={styles.progressBar}>
                 <View style={[styles.progressFill, { width: `${(step / 10) * 100}%` }]} />

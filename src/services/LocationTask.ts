@@ -2,7 +2,7 @@ import * as TaskManager from 'expo-task-manager';
 import * as Location from 'expo-location';
 import * as Notifications from 'expo-notifications';
 
-export const LOCATION_TRACKING_TASK = 'Z3_PARTNER_LOCATION_TRACKING';
+export const LOCATION_TRACKING_TASK = 'Z3_COPILOT_LOCATION_TRACKING';
 
 /**
  * Calcule la distance entre deux coordonnées en mètres (Haversine).

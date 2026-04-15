@@ -14,7 +14,7 @@ export const generateMaintenancePDF = async (profile: VehicleProfile, expenses: 
     <html lang="fr">
     <head>
       <meta charset="UTF-8">
-      <title>Carnet d'Entretien - Z3 Partner</title>
+      <title>Carnet d'Entretien - Z3 Copilot</title>
       <style>
         body {
           font-family: 'Helvetica', 'Arial', sans-serif;
@@ -140,7 +140,7 @@ export const generateMaintenancePDF = async (profile: VehicleProfile, expenses: 
     </head>
     <body>
       <div class="header">
-        <div class="logo">Z3 <span>Partner</span></div>
+        <div class="logo">Z3 <span>Copilot</span></div>
         <div class="document-title">
           <h1>Journal de Maintenance</h1>
           <p>Généré le ${new Date().toLocaleDateString('fr-FR')}</p>
@@ -207,8 +207,8 @@ export const generateMaintenancePDF = async (profile: VehicleProfile, expenses: 
       </table>
 
       <div class="footer">
-        <p>Ce document a été généré via l'application Z3 Partner. Les données sont déclaratives et basées sur l'historique saisi par l'utilisateur.</p>
-        <p>&copy; ${new Date().getFullYear()} Z3 Partner - Compagnon d'Entretien BMW Z3</p>
+        <p>Ce document a été généré via l'application Z3 Copilot. Les données sont déclaratives et basées sur l'historique saisi par l'utilisateur.</p>
+        <p>&copy; ${new Date().getFullYear()} Z3 Copilot - Compagnon d'Entretien BMW Z3</p>
       </div>
     </body>
     </html>
