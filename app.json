@@ -23,15 +23,21 @@
           "NSPrivacyAccessedAPITypes": [
             {
               "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryUserDefaults",
-              "NSPrivacyAccessedAPITypeReasons": ["CA92.1"]
+              "NSPrivacyAccessedAPITypeReasons": [
+                "CA92.1"
+              ]
             },
             {
               "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryDiskSpace",
-              "NSPrivacyAccessedAPITypeReasons": ["85F4.1"]
+              "NSPrivacyAccessedAPITypeReasons": [
+                "85F4.1"
+              ]
             },
             {
               "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryFileTimestamp",
-              "NSPrivacyAccessedAPITypeReasons": ["C617.1"]
+              "NSPrivacyAccessedAPITypeReasons": [
+                "C617.1"
+              ]
             }
           ]
         }
@@ -42,7 +48,13 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#121212"
       },
-      "package": "com.ftmx.z3copilot"
+      "package": "com.ftmx.z3copilot",
+      "permissions": [
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "plugins": [
       [
@@ -58,5 +70,10 @@
         }
       ]
     ],
+    "extra": {
+      "eas": {
+        "projectId": "b51384d6-7471-4da4-9388-d4d02a944474"
+      }
+    }
   }
 }
