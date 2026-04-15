@@ -14,6 +14,7 @@ import { GlassCard } from '../components/common/GlassCard';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Wrench, Fuel, Sparkles, Plus, MoreHorizontal, Clock, ArrowRight } from 'lucide-react-native';
 import { getMaintenanceSchema } from '../utils/maintenanceSchema';
+import { calculateGlobalDailyAverage } from '../utils/mileageAnalytics';
 
 type TimelineItem = {
   id: string;
@@ -60,8 +61,7 @@ export default function HistoryScreen() {
     });
 
     // 3. Ajouter le futur
-    const currentMileage = profile.mileage;
-    const schema = getMaintenanceSchema(profile.model);
+    const dailyAvg = calculateGlobalDailyAverage(useVehicleStore.getState().trips, profile);
     
     schema.forEach(item => {
       if (!item.intervalKm) return;
@@ -70,7 +70,7 @@ export default function HistoryScreen() {
       const progress = effectiveMileage % item.intervalKm;
       const remainingKm = item.intervalKm - progress;
       
-      const daysRemaining = Math.max(0, Math.round(remainingKm / 15));
+      const daysRemaining = Math.max(0, Math.round(remainingKm / dailyAvg));
       const estimatedDate = new Date();
       estimatedDate.setDate(now.getDate() + daysRemaining);
 

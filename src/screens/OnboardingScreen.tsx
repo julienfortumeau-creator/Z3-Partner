@@ -20,7 +20,7 @@ import { WearItem } from '../components/common/WearItem';
 import { Z3_MODELS, Z3_YEARS } from '../constants/vehicleData';
 import { 
   Car, Calendar, Gauge, Euro, Shield, Disc, Thermometer, Zap, 
-  ChevronLeft, Aperture, Activity, Wind, Fuel, Wrench, Layers, 
+  ChevronLeft, Activity, Wind, Fuel, Wrench, Layers, 
   ArrowUpDown, ZapOff, Droplets, Battery as BatteryIcon, Circle
 } from 'lucide-react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -137,7 +137,7 @@ export default function OnboardingScreen() {
   const [form, setForm] = useState({
     model: currentProfile?.model || '',
     year: currentProfile?.year || '',
-    mileage: currentProfile?.mileage.toString() || '124000',
+    mileage: currentProfile?.mileage.toString() || '112634',
     price: currentProfile?.purchasePrice.toString() || '18500',
     insurance: currentProfile?.insuranceCost.toString() || '600',
     acquisitionDate: currentProfile?.acquisitionDate || new Date().toISOString().split('T')[0],
@@ -214,24 +214,6 @@ export default function OnboardingScreen() {
           {currentHealthStep.description}
         </Text>
         
-        <View style={styles.fullBleedContainer}>
-          <LinearGradient
-            colors={['#3a3a3a', '#1a1a1a']}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={styles.techInfoCard}
-          >
-            <View style={styles.infoRow}>
-              <Text style={styles.infoLabel}>💡 Enjeu :</Text>
-              <Text style={styles.infoValue}>{currentHealthStep.enjeu}</Text>
-            </View>
-            <View style={styles.infoRow}>
-              <Text style={[styles.infoLabel, { color: currentHealthStep.priorityColor }]}>🔴 Priorité :</Text>
-              <Text style={styles.infoValue}>{currentHealthStep.priority}</Text>
-            </View>
-          </LinearGradient>
-        </View>
-
         <GlassCard style={styles.formCard}>
           {currentHealthStep.items.map((item, idx) => (
             <React.Fragment key={item.id}>
@@ -246,6 +228,17 @@ export default function OnboardingScreen() {
             </React.Fragment>
           ))}
         </GlassCard>
+
+        <View style={styles.footerInfoBox}>
+          <View style={[styles.footerInfoRow, { borderLeftColor: colors.primary }]}>
+            <Text style={styles.infoLabel}>💡 ENJEU</Text>
+            <Text style={styles.infoValue}>{currentHealthStep.enjeu ?? 'Non spécifié'}</Text>
+          </View>
+          <View style={[styles.footerInfoRow, { borderLeftColor: currentHealthStep.priorityColor }]}>
+            <Text style={[styles.infoLabel, { color: currentHealthStep.priorityColor }]}>🔴 PRIORITÉ</Text>
+            <Text style={styles.infoValue}>{currentHealthStep.priority ?? 'Non spécifiée'}</Text>
+          </View>
+        </View>
       </>
     );
   };
@@ -321,7 +314,7 @@ export default function OnboardingScreen() {
                 <ChevronLeft color={colors.textSecondary} size={28} />
               </TouchableOpacity>
             )}
-            <Aperture size={64} color={colors.primary} />
+            <MaterialCommunityIcons name="steering" size={64} color={colors.primary} />
             <Text style={styles.title}>{currentProfile ? 'Modifier Profil' : 'Z3 Copilot'}</Text>
             <View style={styles.progressContainer}>
               <View style={styles.progressBar}>
@@ -476,16 +469,13 @@ const styles = StyleSheet.create({
     flex: 1,
     fontWeight: '500',
   },
-  fullBleedContainer: {
-    marginHorizontal: -spacing.xl,
-    marginBottom: spacing.lg,
+  footerInfoBox: {
+    gap: spacing.md,
+    marginBottom: spacing.xxl,
   },
-  techInfoCard: {
-    paddingVertical: spacing.md,
-    paddingLeft: spacing.lg,
-    paddingRight: spacing.xl,
-    borderLeftWidth: 4,
-    borderLeftColor: colors.primary,
+  footerInfoRow: {
+    paddingLeft: spacing.md,
+    borderLeftWidth: 2,
   },
   formCard: {
     marginBottom: spacing.xl,

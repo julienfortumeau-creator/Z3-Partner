@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, ScrollView, Switch, TouchableOpacity, Alert, Linking } from 'react-native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useVehicleStore } from '../store/useVehicleStore';
 import { colors, spacing, typography } from '../theme/colors';
 import { GlassCard } from '../components/common/GlassCard';
 import { LinearGradient } from 'expo-linear-gradient';
-import { MapPin, Bell, LogOut, ChevronRight, User, ShieldCheck, Mail, Building2, FileText, Cloud, Download, Share2 } from 'lucide-react-native';
+import { MapPin, Bell, LogOut, ChevronRight, User, ShieldCheck, Mail, Building2, FileText, Cloud, Download, Share2, Heart } from 'lucide-react-native';
 import { exportData, importData } from '../services/backupService';
 import { generateMaintenancePDF } from '../utils/pdfGenerator';
 import { useNavigation } from '@react-navigation/native';
@@ -165,7 +166,7 @@ export default function SettingsScreen() {
           <View style={styles.divider} />
           <MenuLink 
             label="Modifier le profil véhicule" 
-            icon={ShieldCheck} 
+            icon={({ color, size }: any) => <MaterialCommunityIcons name="steering" size={size} color={color} />} 
             onPress={() => navigation.navigate('Onboarding' as any)}
           />
           <View style={styles.divider} />
@@ -197,6 +198,11 @@ export default function SettingsScreen() {
 
         <View style={styles.footer}>
           <Text style={styles.versionText}>Z3 Copilot v1.0.0 (Premium)</Text>
+          <View style={styles.signatureRow}>
+            <Text style={styles.signatureText}>Handcrafted with </Text>
+            <Heart size={10} color={colors.error} fill={colors.error} />
+            <Text style={styles.signatureText}> by ftmx</Text>
+          </View>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -307,8 +313,20 @@ const styles = StyleSheet.create({
     marginBottom: spacing.xxl,
   },
   versionText: {
-    fontSize: 12,
+    fontSize: 10,
     color: colors.textMuted,
     letterSpacing: 1,
+    textTransform: 'uppercase',
+  },
+  signatureRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 6,
+    opacity: 0.8,
+  },
+  signatureText: {
+    fontSize: 11,
+    color: colors.textSecondary,
+    fontWeight: '600',
   },
 });

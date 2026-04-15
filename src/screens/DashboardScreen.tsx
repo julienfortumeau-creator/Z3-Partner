@@ -8,6 +8,8 @@ import { Car, Fuel, Shield, AlertTriangle, CheckCircle2 } from 'lucide-react-nat
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 import { getMaintenanceSchema } from '../utils/maintenanceSchema';
+import { calculateAverageConsumption } from '../utils/fuelAnalytics';
+import { calculateBudgetForecast } from '../utils/mileageAnalytics';
 
 import * as Notifications from 'expo-notifications';
 import { MileageModal } from '../components/common/MileageModal';
@@ -16,6 +18,7 @@ export default function DashboardScreen() {
   const navigation = useNavigation<any>();
   const profile = useVehicleStore((state) => state.profile);
   const expenses = useVehicleStore((state) => state.expenses);
+  const trips = useVehicleStore((state) => state.trips);
   const getTCO = useVehicleStore((state) => state.getTCO);
 
   const [mileageModalVisible, setMileageModalVisible] = React.useState(false);
@@ -35,6 +38,11 @@ export default function DashboardScreen() {
 
     return () => subscription.remove();
   }, [navigation]);
+
+  const nextMonthBudget = useMemo(() => {
+    if (!profile) return 0;
+    return calculateBudgetForecast(trips, profile, expenses, 1).total;
+  }, [trips, profile, expenses]);
 
   if (!profile) return null;
 
@@ -81,19 +89,10 @@ export default function DashboardScreen() {
     .filter(e => e.category === 'fuel' && e.liters && e.mileage)
     .sort((a, b) => (b.mileage || 0) - (a.mileage || 0));
 
-  const consumption = useMemo(() => {
-    if (fuelExpenses.length >= 2) {
-      const last = fuelExpenses[0];
-      const prev = fuelExpenses[1];
-      const distance = (last.mileage || 0) - (prev.mileage || 0);
-      const ltrs = last.liters || 0;
-      
-      if (distance > 0 && ltrs > 0) {
-        return ((ltrs / distance) * 100).toFixed(1);
-      }
-    }
-    return null;
-  }, [fuelExpenses]);
+  const consumptionVal = useMemo(() => {
+    const avg = calculateAverageConsumption(expenses);
+    return avg ? avg.toFixed(1) : null;
+  }, [expenses]);
 
   const StatItem = ({ label, value, subValue, icon: Icon, color }: any) => (
     <View style={styles.statItem}>
@@ -187,7 +186,7 @@ export default function DashboardScreen() {
           >
             <StatItem 
               label="Carburant" 
-              value={consumption ? `${consumption} l/100km` : '--.- l/100km'} 
+              value={consumptionVal ? `${consumptionVal} l/100km` : '--.- l/100km'} 
               subValue={`${expenses.filter(e => e.category === 'fuel').length} Pleins`}
               icon={Fuel} 
               color="#AAA"
@@ -213,6 +212,25 @@ export default function DashboardScreen() {
                 icon={Shield} 
                 color="#AAA"
               />
+            </LinearGradient>
+          </TouchableOpacity>
+
+          <TouchableOpacity 
+            activeOpacity={0.8} 
+            style={styles.tcoCardContainer} 
+            onPress={navigateToStats}
+          >
+            <LinearGradient
+              colors={['#4a0e0e', '#1a0505']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.tcoCard}
+            >
+              <View>
+                <Text style={styles.tcoLabel}>Budget prévisionnel (Mois Prochain)</Text>
+                <Text style={styles.tcoValue}>{nextMonthBudget.toLocaleString()} €</Text>
+              </View>
+              <Text style={styles.tcoSubText}>Détails {'>'}</Text>
             </LinearGradient>
           </TouchableOpacity>
         </View>

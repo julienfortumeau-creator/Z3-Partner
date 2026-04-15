@@ -4,7 +4,8 @@ import { useVehicleStore } from '../store/useVehicleStore';
 import { colors, spacing, typography } from '../theme/colors';
 import { LinearGradient } from 'expo-linear-gradient';
 import { PieChart, LineChart } from 'react-native-gifted-charts';
-import { TrendingUp, Wallet, Banknote, PieChart as PieIcon } from 'lucide-react-native';
+import { TrendingUp, Wallet, Banknote, PieChart as PieIcon, Navigation, Calendar, Droplets, Fuel } from 'lucide-react-native';
+import { calculatePeriodStats, calculateBudgetForecast } from '../utils/mileageAnalytics';
 
 const { width } = Dimensions.get('window');
 
@@ -13,6 +14,7 @@ type FilterType = 'month' | 'year' | 'all';
 export default function StatsScreen() {
   const expenses = useVehicleStore((state) => state.expenses);
   const profile = useVehicleStore((state) => state.profile);
+  const getTCO = useVehicleStore((state) => state.getTCO);
   const [filter, setFilter] = useState<FilterType>('all');
 
   const filteredExpenses = useMemo(() => {
@@ -55,14 +57,40 @@ export default function StatsScreen() {
       }));
   }, [data]);
 
-  const lineData = [
-    { value: 120, label: 'Jan' },
-    { value: 80, label: 'Fév' },
-    { value: 250, label: 'Mar' },
-    { value: 180, label: 'Avr' },
-    { value: 450, label: 'Mai' },
-    { value: 300, label: 'Juin' },
-  ];
+  const dynamicLineData = useMemo(() => {
+    const months: { value: number, label: string }[] = [];
+    const now = new Date();
+    const count = filter === 'month' ? 6 : 12;
+
+    for (let i = 0; i < count; i++) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const m = d.getMonth();
+      const y = d.getFullYear();
+
+      const monthExpenses = expenses.filter(exp => {
+        const expDate = new Date(exp.date);
+        return expDate.getMonth() === m && expDate.getFullYear() === y;
+      });
+
+      const totalExp = monthExpenses.reduce((sum, exp) => sum + exp.amount, 0);
+      const insurance = (profile?.insuranceCost || 0) / 12;
+
+      months.push({
+        value: totalExp + insurance,
+        label: d.toLocaleDateString('fr-FR', { month: 'short' }).replace('.', ''),
+      });
+    }
+
+    const data = months.reverse();
+    // On ne considère le graphique "vide" que s'il n'y a AUCUNE dépense saisie sur la période
+    const hasExpenses = expenses.some(exp => {
+      const expDate = new Date(exp.date);
+      const firstMonthDate = new Date(now.getFullYear(), now.getMonth() - (count - 1), 1);
+      return expDate >= firstMonthDate;
+    });
+
+    return { data, isEmpty: !hasExpenses && expenses.length === 0 };
+  }, [expenses, profile, filter]);
 
   const { distanceInPeriod, costPerKm } = useMemo(() => {
     const mileages = filteredExpenses
@@ -92,6 +120,22 @@ export default function StatsScreen() {
     const total = totalFiltered + insurance;
     return { distanceInPeriod: dist, costPerKm: (total / dist).toFixed(2) };
   }, [filteredExpenses, totalFiltered, filter, profile]);
+
+  const mileageStats = useMemo(() => {
+    return calculatePeriodStats(
+      useVehicleStore.getState().trips, 
+      filter, 
+      profile?.acquisitionDate
+    );
+  }, [filter, profile]);
+
+  const budgetForecast = useMemo(() => {
+    return calculateBudgetForecast(
+      useVehicleStore.getState().trips,
+      profile!,
+      expenses
+    );
+  }, [expenses, profile]);
 
   const StatSummary = ({ label, value, icon: Icon, color, isCurrency = true, customValue }: any) => (
     <View style={styles.summaryItem}>
@@ -153,6 +197,44 @@ export default function StatsScreen() {
           </LinearGradient>
         </TouchableOpacity>
 
+        <View style={styles.mileageStatsRow}>
+          <TouchableOpacity activeOpacity={0.9} style={styles.mileageCardContainer}>
+            <LinearGradient
+              colors={['#2c3e50', '#000000']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.mileageCard}
+            >
+              <View style={styles.statItem}>
+                <View style={[styles.iconContainer, { backgroundColor: 'rgba(52, 152, 219, 0.2)' }]}>
+                  <Navigation size={28} color={colors.primary} />
+                </View>
+                <View style={styles.statContent}>
+                  <View>
+                    <Text style={styles.statLabel}>Km Moyen ({filter === 'month' ? 'Mois' : (filter === 'year' ? 'Année' : 'Total')})</Text>
+                    <Text style={styles.statValue}>{Math.round(mileageStats.periodTotal).toLocaleString()} km</Text>
+                    <Text style={styles.miniSubValue}>≈ {mileageStats.dailyAverage.toFixed(1)} km / jour</Text>
+                  </View>
+                </View>
+              </View>
+            </LinearGradient>
+          </TouchableOpacity>
+        </View>
+
+        <View style={[styles.tcoCardContainer, { marginTop: spacing.md }]}>
+          <LinearGradient
+            colors={[colors.primary, colors.primaryDark]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.tcoCard}
+          >
+            <View>
+              <Text style={styles.tcoLabel}>Coût de Revient Total (TCO)</Text>
+              <Text style={styles.tcoValue}>{getTCO().toLocaleString()} €</Text>
+            </View>
+          </LinearGradient>
+        </View>
+
         <View style={styles.chartCardWrapper}>
           <LinearGradient
             colors={['#3a3a3a', '#1a1a1a']}
@@ -213,26 +295,32 @@ export default function StatsScreen() {
               <TrendingUp size={20} color={colors.success} />
               <Text style={styles.chartTitle}>Évolution</Text>
             </View>
-          <LineChart
-            data={lineData}
-            height={150}
-            width={width - 80}
-            color={colors.primary}
-            thickness={3}
-            startFillColor="rgba(0, 102, 178, 0.3)"
-            endFillColor="rgba(0, 102, 178, 0.01)"
-            startOpacity={0.4}
-            endOpacity={0.1}
-            noOfSections={3}
-            yAxisColor={colors.border}
-            xAxisColor={colors.border}
-            yAxisTextStyle={{ color: colors.textSecondary, fontSize: 10 }}
-            xAxisLabelTextStyle={{ color: '#FFF', fontSize: 10, fontWeight: '600' }}
-            rulesColor="rgba(255, 255, 255, 0.1)"
-            rulesType="solid"
-            hideDataPoints={false}
-            dataPointsColor={colors.primary}
-          />
+          {dynamicLineData.isEmpty ? (
+            <View style={styles.emptyContainer}>
+              <Text style={styles.emptyText}>En attente de vos premières dépenses</Text>
+            </View>
+          ) : (
+            <LineChart
+              data={dynamicLineData.data}
+              height={150}
+              width={width - 80}
+              color={colors.primary}
+              thickness={3}
+              startFillColor="rgba(0, 102, 178, 0.3)"
+              endFillColor="rgba(0, 102, 178, 0.01)"
+              startOpacity={0.4}
+              endOpacity={0.1}
+              noOfSections={3}
+              yAxisColor={colors.border}
+              xAxisColor={colors.border}
+              yAxisTextStyle={{ color: colors.textSecondary, fontSize: 10 }}
+              xAxisLabelTextStyle={{ color: '#FFF', fontSize: 10, fontWeight: '600' }}
+              rulesColor="rgba(255, 255, 255, 0.1)"
+              rulesType="solid"
+              hideDataPoints={false}
+              dataPointsColor={colors.primary}
+            />
+          )}
           </LinearGradient>
         </View>
 
@@ -268,6 +356,46 @@ export default function StatsScreen() {
             </LinearGradient>
           </View>
         </View>
+
+        <TouchableOpacity activeOpacity={0.9} style={styles.forecastCardContainer}>
+          <LinearGradient
+            colors={['#4a0e0e', '#1a0505']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.forecastCard}
+          >
+            <View style={styles.forecastHeader}>
+              <Calendar size={20} color={colors.error} />
+              <Text style={styles.forecastTitle}>Prévision Budget (1 an)</Text>
+            </View>
+            
+            <View style={styles.forecastMain}>
+              <Text style={styles.forecastTotalLabel}>Total Estimé</Text>
+              <Text style={styles.forecastTotalValue}>{budgetForecast.total.toLocaleString()} €</Text>
+            </View>
+
+            <View style={styles.forecastDivider} />
+
+            <View style={styles.forecastGrid}>
+              <View style={styles.forecastRow}>
+                <Droplets size={14} color="rgba(255,255,255,0.6)" />
+                <Text style={styles.forecastLabel}>Maintenance</Text>
+                <Text style={styles.forecastValue}>{budgetForecast.maintenance.toLocaleString()} €</Text>
+              </View>
+              <View style={styles.forecastRow}>
+                <Fuel size={14} color="rgba(255,255,255,0.6)" />
+                <Text style={styles.forecastLabel}>Carburant</Text>
+                <Text style={styles.forecastValue}>{budgetForecast.fuel.toLocaleString()} €</Text>
+              </View>
+              <View style={styles.forecastRow}>
+                <Shield size={14} color="rgba(255,255,255,0.6)" />
+                <Text style={styles.forecastLabel}>Assurance</Text>
+                <Text style={styles.forecastValue}>{budgetForecast.insurance.toLocaleString()} €</Text>
+              </View>
+            </View>
+          </LinearGradient>
+        </TouchableOpacity>
+
 
       </ScrollView>
     </SafeAreaView>
@@ -329,6 +457,20 @@ const styles = StyleSheet.create({
   tcoCard: {
     paddingHorizontal: 20,
     paddingVertical: 16,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  tcoLabel: {
+    color: 'rgba(255, 255, 255, 0.7)',
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  tcoValue: {
+    color: '#FFF',
+    fontSize: 28,
+    fontWeight: 'bold',
+    marginTop: spacing.xs,
   },
   statItem: {
     flexDirection: 'row',
@@ -373,6 +515,84 @@ const styles = StyleSheet.create({
   },
   subValueText: {
     fontSize: 10,
+    color: '#FFF',
+    fontWeight: '700',
+  },
+  mileageStatsRow: {
+    marginTop: spacing.md,
+    borderRadius: 20,
+    overflow: 'hidden',
+  },
+  mileageCardContainer: {
+    borderRadius: 20,
+    overflow: 'hidden',
+  },
+  mileageCard: {
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+  },
+  miniSubValue: {
+    fontSize: 10,
+    color: 'rgba(255,255,255,0.5)',
+    marginTop: 2,
+    fontWeight: '600',
+  },
+  forecastCardContainer: {
+    marginBottom: spacing.xxl,
+    borderRadius: 20,
+    overflow: 'hidden',
+  },
+  forecastCard: {
+    padding: spacing.lg,
+  },
+  forecastHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+    marginBottom: spacing.lg,
+  },
+  forecastTitle: {
+    ...typography.h3,
+    color: '#FFF',
+  },
+  forecastMain: {
+    alignItems: 'center',
+    marginBottom: spacing.lg,
+  },
+  forecastTotalLabel: {
+    fontSize: 12,
+    color: 'rgba(255,255,255,0.6)',
+    textTransform: 'uppercase',
+    letterSpacing: 1,
+    marginBottom: 4,
+  },
+  forecastTotalValue: {
+    fontSize: 32,
+    fontWeight: '900',
+    color: '#FFF',
+  },
+  forecastDivider: {
+    height: 1,
+    backgroundColor: 'rgba(255,255,255,0.1)',
+    marginBottom: spacing.lg,
+  },
+  forecastGrid: {
+    gap: spacing.md,
+  },
+  forecastRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: spacing.sm,
+  },
+  forecastLabel: {
+    flex: 1,
+    fontSize: 14,
+    color: 'rgba(255,255,255,0.8)',
+    fontWeight: '500',
+  },
+  forecastValue: {
+    fontSize: 14,
     color: '#FFF',
     fontWeight: '700',
   },

@@ -13,7 +13,7 @@ import {
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useVehicleStore, Expense } from '../store/useVehicleStore';
 import { colors, spacing, typography } from '../theme/colors';
-import { GlassCard } from '../components/common/GlassCard';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Wrench, Fuel, Sparkles, MoreHorizontal, ChevronLeft, Save, Trash2, Calendar, ScanLine } from 'lucide-react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
@@ -146,7 +146,7 @@ export default function AddExpenseScreen() {
             {expense ? 'Modifier l\'élément' : 'Ajouter un entretien'}
           </Text>
           <TouchableOpacity 
-            onPress={() => alert("Lancement du Scanner IA...")} 
+            onPress={() => alert("La fonctionnalité de scanner intelligente arrive bientôt :)")} 
             style={styles.scanButtonHeader}
           >
             <ScanLine color={colors.primary} size={24} />
@@ -154,7 +154,13 @@ export default function AddExpenseScreen() {
         </View>
 
         <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
-          <GlassCard style={styles.formCard} variant="glass">
+          <View style={styles.formCardWrapper}>
+            <LinearGradient
+              colors={['#3a3a3a', '#1a1a1a']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.formCard}
+            >
             <View style={styles.form}>
               <View style={styles.inputGroup}>
                 <Text style={styles.inputLabel}>Titre / Description</Text>
@@ -288,7 +294,8 @@ export default function AddExpenseScreen() {
                 </TouchableOpacity>
               </View>
             </View>
-          </GlassCard>
+            </LinearGradient>
+          </View>
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -318,9 +325,13 @@ const styles = StyleSheet.create({
     padding: spacing.lg,
     paddingBottom: spacing.xxl,
   },
+  formCardWrapper: {
+    borderRadius: 24,
+    overflow: 'hidden',
+    marginBottom: spacing.xxl,
+  },
   formCard: {
     padding: spacing.xl,
-    marginBottom: spacing.xl,
   },
   form: {
     gap: spacing.lg,

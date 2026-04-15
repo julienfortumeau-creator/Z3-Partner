@@ -121,22 +121,21 @@ export default function SupportScreen() {
           >
             <TouchableOpacity 
               style={styles.linkRow} 
-              onPress={() => handleLink('https://www.z3-france.com')}
+              onPress={() => handleLink('https://www.bmwz3club.fr/')}
             >
               <View style={styles.linkInfo}>
                 <HelpCircle color={colors.textSecondary} size={20} />
-                <Text style={styles.linkText}>Z3 Club France</Text>
+                <Text style={styles.linkText}>BMW Z3 Club France</Text>
               </View>
               <ExternalLink color={colors.textMuted} size={16} />
             </TouchableOpacity>
-            <View style={styles.divider} />
             <TouchableOpacity 
               style={styles.linkRow} 
-              onPress={() => handleLink('https://www.bimmerforums.com/forum/forumdisplay.php?137-Z3-Roadster-Coupe-M-Roadster-M-Coupe-(Z3)')}
+              onPress={() => handleLink('https://www.forumbmw.net/')}
             >
               <View style={styles.linkInfo}>
                 <HelpCircle color={colors.textSecondary} size={20} />
-                <Text style={styles.linkText}>Bimmerforums Z3</Text>
+                <Text style={styles.linkText}>Forum BMW</Text>
               </View>
               <ExternalLink color={colors.textMuted} size={16} />
             </TouchableOpacity>
