@@ -48,10 +48,15 @@ export default function DashboardScreen() {
 
   const currentMileage = profile.mileage;
 
+  // Base commune de calcul de distance depuis la dernière sauvegarde
+  const baseMileage = profile.profileLastSavedMileage || currentMileage;
+  const drivenSinceSave = Math.max(0, currentMileage - baseMileage);
+
   // Calcul de la jauge Oil Service (Indépendante)
   const schema = getMaintenanceSchema(profile.model);
   const oilSchema = schema.find(m => m.id === 'oil')!;
-  const oilProgress = (currentMileage % (oilSchema.intervalKm || 10000));
+  const initialOilWear = profile.initialWearKm?.['oil'] || 0;
+  const oilProgress = initialOilWear + drivenSinceSave;
 
   // Calcul de la jauge Entretien & réparation (Pneus, Freins, etc.)
   const maintenanceItems = schema.filter(m => m.typeLabel === 'Entretien & réparation');
@@ -59,15 +64,14 @@ export default function DashboardScreen() {
   const maintenanceStatus = maintenanceItems.map(item => {
     if (!item.intervalKm) return null;
     const initialWear = profile.initialWearKm?.[item.id] || 0;
-    const effectiveMileage = currentMileage + initialWear;
-    const progress = (effectiveMileage % item.intervalKm);
-    const percentage = (progress / item.intervalKm) * 100;
+    const usage = initialWear + drivenSinceSave;
+    const percentage = (usage / item.intervalKm) * 100;
     
     return {
       ...item,
-      progress,
+      progress: usage,
       percentage,
-      remaining: item.intervalKm - progress
+      remaining: item.intervalKm - usage
     };
   }).filter((i): i is any => i !== null);
 

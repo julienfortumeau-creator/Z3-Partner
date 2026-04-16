@@ -59,14 +59,40 @@ export default function StatsScreen() {
   }, [data]);
 
   const dynamicLineData = useMemo(() => {
-    const months: { value: number, label: string }[] = [];
     const now = new Date();
-    const count = filter === 'month' ? 6 : 12;
+
+    if (filter === 'month') {
+      // Vue semaine : 4 semaines du mois en cours
+      const weeks: { value: number, label: string }[] = [];
+      for (let w = 0; w < 4; w++) {
+        const weekStart = new Date(now.getFullYear(), now.getMonth(), 1 + w * 7);
+        const weekEnd = new Date(now.getFullYear(), now.getMonth(), 1 + (w + 1) * 7);
+        const weekExpenses = expenses.filter(exp => {
+          const d = new Date(exp.date);
+          return d >= weekStart && d < weekEnd;
+        });
+        weeks.push({
+          value: weekExpenses.reduce((sum, exp) => sum + exp.amount, 0),
+          label: `S${w + 1}`,
+        });
+      }
+      const hasExpenses = weeks.some(w => w.value > 0);
+      return { data: weeks, isEmpty: !hasExpenses };
+    }
+
+    // Vue mois : 12 mois (pour "Année" ou "Tout")
+    const months: { value: number, label: string }[] = [];
+    const count = 12;
 
     for (let i = 0; i < count; i++) {
       const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
       const m = d.getMonth();
       const y = d.getFullYear();
+
+      // Pour "year" on filtre sur l'année en cours uniquement
+      if (filter === 'year' && y !== now.getFullYear()) {
+        continue;
+      }
 
       const monthExpenses = expenses.filter(exp => {
         const expDate = new Date(exp.date);
@@ -83,7 +109,6 @@ export default function StatsScreen() {
     }
 
     const data = months.reverse();
-    // On ne considère le graphique "vide" que s'il n'y a AUCUNE dépense saisie sur la période
     const hasExpenses = expenses.some(exp => {
       const expDate = new Date(exp.date);
       const firstMonthDate = new Date(now.getFullYear(), now.getMonth() - (count - 1), 1);
@@ -130,13 +155,16 @@ export default function StatsScreen() {
     );
   }, [filter, profile, trips]);
 
+  const forecastMonths = filter === 'month' ? 1 : 12;
+
   const budgetForecast = useMemo(() => {
     return calculateBudgetForecast(
       trips,
       profile!,
-      expenses
+      expenses,
+      forecastMonths
     );
-  }, [expenses, profile, trips]);
+  }, [expenses, profile, trips, forecastMonths]);
 
   const StatSummary = ({ label, value, icon: Icon, color, isCurrency = true, customValue }: any) => (
     <View style={styles.summaryItem}>
@@ -367,7 +395,9 @@ export default function StatsScreen() {
           >
             <View style={styles.forecastHeader}>
               <Calendar size={20} color={colors.error} />
-              <Text style={styles.forecastTitle}>Prévision Budget (1 an)</Text>
+              <Text style={styles.forecastTitle}>
+                Prévision Budget ({filter === 'month' ? '1 mois' : '1 an'})
+              </Text>
             </View>
             
             <View style={styles.forecastMain}>

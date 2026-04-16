@@ -30,6 +30,7 @@ export interface VehicleProfile {
   isCoupé: boolean;
   insuranceCost: number;
   initialWearKm: Record<string, number>; // Usure enregistrée à l'onboarding
+  profileLastSavedMileage?: number;
   garage?: GarageInfo;
 }
 

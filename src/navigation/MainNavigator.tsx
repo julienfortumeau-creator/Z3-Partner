@@ -21,7 +21,7 @@ import { colors } from '../theme/colors';
 import { useVehicleStore } from '../store/useVehicleStore';
 
 export type RootStackParamList = {
-  Onboarding: undefined;
+  Onboarding: { startStep?: number } | undefined;
   MainTabs: undefined;
   Support: undefined;
   AddExpense: { expense?: any, initialCategory?: any };

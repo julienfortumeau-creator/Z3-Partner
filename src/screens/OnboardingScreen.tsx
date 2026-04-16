@@ -7,9 +7,10 @@ import {
   ScrollView, 
   KeyboardAvoidingView, 
   Platform,
-  TouchableOpacity
+  TouchableOpacity,
+  Modal
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { useVehicleStore } from '../store/useVehicleStore';
 import { colors, spacing, typography } from '../theme/colors';
 import { PremiumButton } from '../components/common/PremiumButton';
@@ -138,8 +139,10 @@ const HEALTH_STEPS = [
 
 export default function OnboardingScreen() {
   const navigation = useNavigation<any>();
+  const route = useRoute<any>();
+  const startStep = route.params?.startStep ?? 1;
   const setProfile = useVehicleStore((state) => state.setProfile);
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(startStep);
 
   const currentProfile = useVehicleStore((state) => state.profile);
   const [form, setForm] = useState({
@@ -201,6 +204,7 @@ export default function OnboardingScreen() {
       acquisitionDate: form.acquisitionDate,
       isCoupé: form.model.toLowerCase().includes('coupé'),
       initialWearKm,
+      profileLastSavedMileage: parseInt(form.mileage) || 0,
     });
     
     if (currentProfile) {
@@ -273,30 +277,45 @@ export default function OnboardingScreen() {
           </TouchableOpacity>
         </View>
 
-        {showDatePicker && (
-          <View style={styles.datePickerContainer}>
+        {Platform.OS === 'ios' ? (
+          <Modal visible={showDatePicker} transparent animationType="slide">
+            <View style={styles.modalOverlay}>
+              <View style={styles.modalContent}>
+                <View style={styles.modalHeader}>
+                  <TouchableOpacity onPress={() => setShowDatePicker(false)}>
+                    <Text style={styles.modalDoneText}>Terminer</Text>
+                  </TouchableOpacity>
+                </View>
+                <DateTimePicker
+                  value={new Date(form.acquisitionDate)}
+                  mode="date"
+                  display="spinner"
+                  textColor="#FFFFFF"
+                  onChange={(event, selectedDate) => {
+                    if (selectedDate) {
+                      setForm({...form, acquisitionDate: selectedDate.toISOString().split('T')[0]});
+                    }
+                  }}
+                  maximumDate={new Date()}
+                />
+              </View>
+            </View>
+          </Modal>
+        ) : (
+          showDatePicker && (
             <DateTimePicker
               value={new Date(form.acquisitionDate)}
               mode="date"
-              display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+              display="default"
               onChange={(event, selectedDate) => {
-                if (Platform.OS === 'android') setShowDatePicker(false);
+                setShowDatePicker(false);
                 if (selectedDate) {
                   setForm({...form, acquisitionDate: selectedDate.toISOString().split('T')[0]});
                 }
               }}
               maximumDate={new Date()}
-              textColor={Platform.OS === 'ios' ? '#FFFFFF' : undefined}
             />
-            {Platform.OS === 'ios' && (
-              <TouchableOpacity 
-                style={styles.doneButton}
-                onPress={() => setShowDatePicker(false)}
-              >
-                <Text style={styles.doneButtonText}>Valider la date</Text>
-              </TouchableOpacity>
-            )}
-          </View>
+          )
         )}
 
         <InputField 
@@ -574,22 +593,29 @@ const styles = StyleSheet.create({
     color: colors.textPrimary,
     fontSize: 16,
   },
-  datePickerContainer: {
-    backgroundColor: 'rgba(0,0,0,0.3)',
-    borderRadius: 12,
-    padding: spacing.sm,
-    marginBottom: spacing.md,
+  modalOverlay: {
+    flex: 1, 
+    justifyContent: 'flex-end', 
+    backgroundColor: 'rgba(0,0,0,0.6)',
   },
-  doneButton: {
-    backgroundColor: colors.primary,
-    padding: spacing.sm,
-    borderRadius: 8,
-    alignItems: 'center',
-    marginTop: spacing.sm,
+  modalContent: {
+    backgroundColor: colors.background, 
+    paddingBottom: 40, 
+    borderTopLeftRadius: 20, 
+    borderTopRightRadius: 20,
+    borderTopWidth: 1,
+    borderColor: colors.border,
   },
-  doneButtonText: {
-    color: '#FFF',
-    fontWeight: '800',
-    fontSize: 14,
+  modalHeader: {
+    flexDirection: 'row', 
+    justifyContent: 'flex-end', 
+    padding: spacing.md,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
+  },
+  modalDoneText: {
+    color: colors.primary, 
+    fontWeight: 'bold', 
+    fontSize: 16,
   },
 });

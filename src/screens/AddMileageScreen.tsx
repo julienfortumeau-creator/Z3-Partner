@@ -85,74 +85,78 @@ export default function AddMileageScreen() {
             </View>
 
             <ScrollView 
-              contentContainerStyle={styles.content}
+              contentContainerStyle={styles.scroll}
               showsVerticalScrollIndicator={false}
               keyboardShouldPersistTaps="handled"
             >
-              {/* Bouton d'ajout central */}
-              <View style={styles.actionContainer}>
-                <TouchableOpacity 
-                  style={styles.plusButton} 
-                  onPress={() => setShowDistancePicker(true)}
-                  activeOpacity={0.8}
-                >
-                  <Plus color="#FFF" size={40} />
-                </TouchableOpacity>
-              </View>
-
-              {/* Bloc Nouveau Compteur */}
-              <View style={styles.cardWrapper}>
+              <View style={styles.formCardWrapper}>
                 <LinearGradient
                   colors={['#3a3a3a', '#1a1a1a']}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 1 }}
-                  style={styles.resultCard}
+                  style={styles.formCard}
                 >
                   <View style={styles.resultRow}>
-                    <View>
+                    <View style={{ flex: 1 }}>
                       <Text style={styles.resultLabel}>DISTANCE AJOUTÉE</Text>
                       <Text style={[styles.distanceValue, distance === 0 && { color: colors.textSecondary }]}>
                         + {distance} km
                       </Text>
                     </View>
-                    <Navigation size={32} color={distance > 0 ? colors.primary : colors.textMuted} />
+                    <TouchableOpacity 
+                      style={styles.smallPlusButton} 
+                      onPress={() => setShowDistancePicker(true)}
+                    >
+                      <Plus color="#FFF" size={28} />
+                    </TouchableOpacity>
                   </View>
                   
                   <View style={styles.divider} />
                   
                   <View style={styles.resultRow}>
-                    <View>
+                    <View style={{ flex: 1 }}>
                       <Text style={styles.resultLabel}>NOUVEAU TOTAL</Text>
                       <Text style={styles.totalValue}>
                         {((profile?.mileage || 0) + distance).toLocaleString()} km
                       </Text>
                     </View>
+                    <Navigation size={28} color={distance > 0 ? colors.primary : colors.textMuted} />
+                  </View>
+
+                  <View style={styles.formInputs}>
+                    <View style={styles.inputGroup}>
+                      <Text style={styles.inputLabel}>Titre / Description</Text>
+                      <TextInput
+                        style={styles.input}
+                        value={label}
+                        onChangeText={setLabel}
+                        placeholder="Nom pour l'historique"
+                        placeholderTextColor={colors.textMuted}
+                      />
+                    </View>
+
+                    <View style={styles.inputGroup}>
+                      <Text style={styles.inputLabel}>Date du trajet</Text>
+                      <TouchableOpacity 
+                        style={styles.datePickerButton} 
+                        onPress={() => setShowDatePicker(true)}
+                      >
+                        <Calendar size={20} color={colors.primary} />
+                        <Text style={styles.dateText}>{formatDateLabel(date)}</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+
+                  <View style={styles.actionRow}>
+                    <TouchableOpacity 
+                      style={[styles.button, styles.saveButton]} 
+                      onPress={handleSave}
+                    >
+                      <Save color="#FFF" size={20} />
+                      <Text style={styles.buttonText}>Enregistrer</Text>
+                    </TouchableOpacity>
                   </View>
                 </LinearGradient>
-              </View>
-
-              {/* Titre du Trajet */}
-              <View style={styles.inputSection}>
-                <Text style={styles.sectionLabel}>TITRE DU TRAJET</Text>
-                <TextInput
-                  style={styles.input}
-                  value={label}
-                  onChangeText={setLabel}
-                  placeholder="Nom pour l'historique"
-                  placeholderTextColor={colors.textMuted}
-                />
-              </View>
-
-              {/* Sélecteur de Date */}
-              <View style={styles.inputSection}>
-                <Text style={styles.sectionLabel}>DATE DU TRAJET</Text>
-                <TouchableOpacity 
-                  style={styles.dateButton} 
-                  onPress={() => setShowDatePicker(true)}
-                >
-                  <Calendar size={20} color={colors.primary} />
-                  <Text style={styles.dateText}>{formatDateLabel(date)}</Text>
-                </TouchableOpacity>
               </View>
 
               {showDatePicker && (
@@ -164,14 +168,6 @@ export default function AddMileageScreen() {
                   maximumDate={new Date()}
                 />
               )}
-
-              <View style={styles.buttonContainer}>
-                <PremiumButton 
-                  title="Enregistrer" 
-                  onPress={handleSave}
-                  style={styles.saveButton}
-                />
-              </View>
             </ScrollView>
           </View>
         </TouchableWithoutFeedback>
@@ -250,83 +246,16 @@ const styles = StyleSheet.create({
     ...typography.h2,
     color: colors.textPrimary,
   },
-  content: {
-    padding: spacing.xl,
+  scroll: {
+    padding: spacing.lg,
     paddingBottom: spacing.xxl,
-    gap: 20,
   },
-  sectionHeader: {
-    alignItems: 'center',
-  },
-  sectionLabel: {
-    fontSize: 12,
-    fontWeight: '700',
-    color: colors.textSecondary,
-    letterSpacing: 1,
-    marginBottom: spacing.xs,
-  },
-  inputSection: {
-    alignItems: 'center',
-  },
-  input: {
-    height: 50,
-    backgroundColor: colors.surfaceHighlight,
-    borderRadius: 12,
-    paddingHorizontal: spacing.md,
-    color: colors.textPrimary,
-    fontSize: 16,
-    borderWidth: 1,
-    borderColor: colors.border,
-    width: '100%',
-    textAlign: 'center',
-    marginTop: 8,
-  },
-  dateButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-    marginTop: 8,
-    backgroundColor: colors.surfaceHighlight,
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-    borderRadius: 15,
-    borderWidth: 1,
-    borderColor: colors.border,
-  },
-  currentValue: {
-    fontSize: 24,
-    fontWeight: '800',
-    color: colors.textSecondary,
-  },
-  actionContainer: {
-    alignItems: 'center',
-    marginVertical: 10,
-  },
-  plusButton: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: colors.primary,
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: colors.primary,
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.4,
-    shadowRadius: 15,
-    elevation: 8,
-  },
-  actionPrompt: {
-    marginTop: spacing.md,
-    color: colors.textPrimary,
-    fontWeight: '600',
-    fontSize: 16,
-  },
-  cardWrapper: {
-    borderRadius: 20,
+  formCardWrapper: {
+    borderRadius: 24,
     overflow: 'hidden',
-    marginBottom: spacing.xl,
+    marginBottom: spacing.xxl,
   },
-  resultCard: {
+  formCard: {
     padding: spacing.xl,
   },
   resultRow: {
@@ -350,23 +279,82 @@ const styles = StyleSheet.create({
     fontWeight: '900',
     color: colors.textPrimary,
   },
+  smallPlusButton: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: colors.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: colors.primary,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 4,
+  },
   divider: {
     height: 1,
     backgroundColor: colors.border,
     marginVertical: spacing.lg,
     opacity: 0.5,
   },
-  dateText: {
-    fontSize: 16,
-    color: colors.textPrimary,
-    fontWeight: '500',
+  formInputs: {
+    marginTop: spacing.xl,
+    gap: spacing.lg,
   },
-  buttonContainer: {
-    marginTop: 'auto',
-    paddingTop: spacing.xl,
+  inputGroup: {
+    marginBottom: spacing.xs,
+  },
+  inputLabel: {
+    ...typography.label,
+    color: colors.textSecondary,
+    marginBottom: spacing.xs,
+  },
+  input: {
+    height: 50,
+    backgroundColor: colors.surfaceHighlight,
+    borderRadius: 12,
+    paddingHorizontal: spacing.md,
+    color: colors.textPrimary,
+    fontSize: 16,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  datePickerButton: {
+    height: 50,
+    backgroundColor: colors.surfaceHighlight,
+    borderRadius: 12,
+    paddingHorizontal: spacing.md,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.md,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  dateText: {
+    color: colors.textPrimary,
+    fontSize: 16,
+  },
+  actionRow: {
+    flexDirection: 'row',
+    marginTop: spacing.xl,
+  },
+  button: {
+    flex: 1,
+    height: 55,
+    borderRadius: 15,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 10,
   },
   saveButton: {
-    width: '100%',
+    backgroundColor: colors.primary,
+  },
+  buttonText: {
+    color: '#FFF',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
   modalOverlay: {
     flex: 1,

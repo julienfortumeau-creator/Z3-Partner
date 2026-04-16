@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import { useVehicleStore } from '../store/useVehicleStore';
 import { colors, spacing, typography } from '../theme/colors';
-import { ChevronLeft, Phone, AlertTriangle, CheckCircle2, Info, Wrench } from 'lucide-react-native';
+import { ChevronLeft, Phone, AlertTriangle, CheckCircle2, Info, Wrench, RefreshCcw } from 'lucide-react-native';
 import { useNavigation } from '@react-navigation/native';
 import { getMaintenanceSchema, getEngineType } from '../utils/maintenanceSchema';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -161,6 +161,15 @@ export default function MaintenanceDetailScreen() {
             </TouchableOpacity>
           </LinearGradient>
         </View>
+
+        <TouchableOpacity
+          style={styles.updateButton}
+          onPress={() => navigation.navigate('Onboarding', { startStep: 2 })}
+          activeOpacity={0.85}
+        >
+          <RefreshCcw size={18} color={colors.primary} />
+          <Text style={styles.updateButtonText}>Mettre à jour mon carnet d'entretien</Text>
+        </TouchableOpacity>
 
         <View style={styles.disclaimerContainer}>
           <Text style={styles.disclaimerText}>
@@ -331,6 +340,25 @@ const styles = StyleSheet.create({
     color: colors.primary,
     fontWeight: '800',
     fontSize: 16,
+  },
+  updateButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 10,
+    marginTop: spacing.xl,
+    marginBottom: spacing.lg,
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.xl,
+    borderRadius: 14,
+    borderWidth: 1.5,
+    borderColor: colors.primary,
+    backgroundColor: 'rgba(0, 102, 178, 0.08)',
+  },
+  updateButtonText: {
+    color: colors.primary,
+    fontWeight: '700',
+    fontSize: 15,
   },
   disclaimerContainer: {
     paddingBottom: spacing.xl,
