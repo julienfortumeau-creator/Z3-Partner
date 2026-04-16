@@ -274,18 +274,29 @@ export default function OnboardingScreen() {
         </View>
 
         {showDatePicker && (
-          <DateTimePicker
-            value={new Date(form.acquisitionDate)}
-            mode="date"
-            display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-            onChange={(event, selectedDate) => {
-              if (Platform.OS === 'android') setShowDatePicker(false);
-              if (selectedDate) {
-                setForm({...form, acquisitionDate: selectedDate.toISOString().split('T')[0]});
-              }
-            }}
-            maximumDate={new Date()}
-          />
+          <View style={styles.datePickerContainer}>
+            <DateTimePicker
+              value={new Date(form.acquisitionDate)}
+              mode="date"
+              display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+              onChange={(event, selectedDate) => {
+                if (Platform.OS === 'android') setShowDatePicker(false);
+                if (selectedDate) {
+                  setForm({...form, acquisitionDate: selectedDate.toISOString().split('T')[0]});
+                }
+              }}
+              maximumDate={new Date()}
+              textColor={Platform.OS === 'ios' ? '#FFFFFF' : undefined}
+            />
+            {Platform.OS === 'ios' && (
+              <TouchableOpacity 
+                style={styles.doneButton}
+                onPress={() => setShowDatePicker(false)}
+              >
+                <Text style={styles.doneButtonText}>Valider la date</Text>
+              </TouchableOpacity>
+            )}
+          </View>
         )}
 
         <InputField 
@@ -561,5 +572,23 @@ const styles = StyleSheet.create({
   dateText: {
     color: colors.textPrimary,
     fontSize: 16,
+  },
+  datePickerContainer: {
+    backgroundColor: 'rgba(0,0,0,0.3)',
+    borderRadius: 12,
+    padding: spacing.sm,
+    marginBottom: spacing.md,
+  },
+  doneButton: {
+    backgroundColor: colors.primary,
+    padding: spacing.sm,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginTop: spacing.sm,
+  },
+  doneButtonText: {
+    color: '#FFF',
+    fontWeight: '800',
+    fontSize: 14,
   },
 });
