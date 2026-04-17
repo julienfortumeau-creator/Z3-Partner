@@ -18,10 +18,25 @@
         "image": "macos-sonoma-14.6-xcode-16.0"
       }
     },
+    "prod-ios": {
+      "node": "22.11.0",
+      "ios": {
+        "image": "macos-sonoma-14.6-xcode-16.0"
+      }
+    },
+    "prod-android": {
+      "node": "22.11.0",
+      "android": {
+        "buildType": "apk"
+      }
+    },
     "production": {
       "node": "22.11.0",
       "ios": {
         "image": "macos-sonoma-14.6-xcode-16.0"
+      },
+      "android": {
+        "buildType": "apk"
       }
     }
   },
