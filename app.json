@@ -2,7 +2,7 @@
   "expo": {
     "name": "Z3 Copilot",
     "slug": "z3-copilot",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
@@ -18,8 +18,7 @@
       "infoPlist": {
         "UIBackgroundModes": [
           "location",
-          "fetch",
-          "processing"
+          "fetch"
         ],
         "NSCameraUsageDescription": "Cette application nécessite l'accès à l'appareil photo pour scanner vos factures d'entretien.",
         "NSLocationWhenInUseUsageDescription": "L'application utilise le GPS pour suivre vos trajets et recommander l'ajout de kilométrage.",
