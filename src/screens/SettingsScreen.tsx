@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, SafeAreaView, ScrollView, Switch, TouchableOpac
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useVehicleStore } from '../store/useVehicleStore';
 import { colors, spacing, typography } from '../theme/colors';
+import { APP_NAME, APP_VERSION, APP_TAGLINE } from '../config/vehicleConfig';
 import { GlassCard } from '../components/common/GlassCard';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MapPin, Bell, LogOut, ChevronRight, User, ShieldCheck, Mail, Building2, FileText, Cloud, Download, Share2, Heart } from 'lucide-react-native';
@@ -115,7 +116,7 @@ export default function SettingsScreen() {
           </View>
           <View>
             <Text style={styles.userName}>{profile.model}</Text>
-            <Text style={styles.userEmail}>Passionné BMW Z3</Text>
+            <Text style={styles.userEmail}>{APP_TAGLINE}</Text>
           </View>
         </View>
 
@@ -206,7 +207,7 @@ export default function SettingsScreen() {
         </GlassCard>
 
         <View style={styles.footer}>
-          <Text style={styles.versionText}>Z3 Copilot v1.0.0 (Premium)</Text>
+          <Text style={styles.versionText}>{APP_NAME} v{APP_VERSION} (Premium)</Text>
           <View style={styles.signatureRow}>
             <Text style={styles.signatureText}>Handcrafted with </Text>
             <Heart size={10} color={colors.error} fill={colors.error} />

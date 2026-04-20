@@ -14,6 +14,7 @@ import { colors, spacing, typography } from '../theme/colors';
 import { ChevronLeft, Phone, AlertTriangle, CheckCircle2, Info, Wrench, RefreshCcw } from 'lucide-react-native';
 import { useNavigation } from '@react-navigation/native';
 import { getMaintenanceSchema, getEngineType } from '../utils/maintenanceSchema';
+import { ENGINE_TYPE_LABELS, LEGAL_TEXTS } from '../config/vehicleConfig';
 import { LinearGradient } from 'expo-linear-gradient';
 
 export default function MaintenanceDetailScreen() {
@@ -85,7 +86,7 @@ export default function MaintenanceDetailScreen() {
         <View style={styles.engineNotice}>
           <Info size={20} color={colors.primary} />
           <Text style={styles.engineNoticeText}>
-            Planning optimisé pour moteur <Text style={{fontWeight: '700'}}>{engineType === 'M' ? 'Z3 M (S50/S54)' : engineType === '6cyl' ? '6 Cylindres M52/M54' : '4 Cylindres M43/M44'}</Text>.
+            Planning optimisé pour moteur <Text style={{fontWeight: '700'}}>{ENGINE_TYPE_LABELS[engineType]}</Text>.
           </Text>
         </View>
 
@@ -176,7 +177,7 @@ export default function MaintenanceDetailScreen() {
 
         <View style={styles.disclaimerContainer}>
           <Text style={styles.disclaimerText}>
-            Les intervalles sont donnés à titre indicatif selon les plans d'entretien standards. Z3 Copilot ne se substitue pas à l'avis d'un professionnel.
+            {LEGAL_TEXTS.maintenanceDisclaimer}
           </Text>
         </View>
 

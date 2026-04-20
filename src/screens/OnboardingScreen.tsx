@@ -18,124 +18,54 @@ import { GlassCard } from '../components/common/GlassCard';
 import { GlassPicker } from '../components/common/GlassPicker';
 import { InputField } from '../components/common/InputField';
 import { WearItem } from '../components/common/WearItem';
-import { Z3_MODELS, Z3_YEARS } from '../constants/vehicleData';
+import { 
+  APP_NAME, APP_SHORT_NAME, VEHICLE_MODELS, VEHICLE_YEARS, 
+  HEALTH_STEPS_CONFIG, MAINTENANCE_ITEMS, LEGAL_TEXTS
+} from '../config/vehicleConfig';
 import { 
   Car, Calendar, Gauge, Euro, Shield, Disc, Thermometer, Zap, 
   ChevronLeft, Activity, Wind, Fuel, Wrench, Layers, 
-  ArrowUpDown, ZapOff, Droplets, Battery as BatteryIcon, Circle, Settings, RefreshCcw
+  ArrowUpDown, ZapOff, Droplets, Battery as BatteryIcon, Circle, Settings, RefreshCcw,
+  RefreshCw, ShieldAlert, CircleDashed
 } from 'lucide-react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { LinearGradient } from 'expo-linear-gradient';
 
-const HEALTH_STEPS = [
-  {
-    title: 'Moteur & lubrification',
-    description: 'Fonctionnement interne du moteur et filtration.',
-    enjeu: 'Longévité moteur + performances.',
-    priority: 'Priorité élevée sur toutes les motorisations.',
-    icon: Activity,
-    priorityColor: colors.warning,
-    items: [
-      { id: 'oil', label: 'Filtre à huile', icon: Droplets },
-      { id: 'spark_plugs', label: 'Bougies d’allumage', icon: Zap },
-      { id: 'air_filter', label: 'Filtre à air', icon: Wind },
-      { id: 'timing', label: 'Chaîne / tendeur', icon: Settings },
-      { id: 'fuel_filter', label: 'Filtre à essence', icon: Fuel },
-    ]
-  },
-  {
-    title: 'Système de refroidissement',
-    description: 'Point faible connu des BMW E36/E37.',
-    enjeu: 'Éviter la surchauffe moteur.',
-    priority: 'Priorité n°1 sur 6 cylindres et Z3 M.',
-    icon: Thermometer,
-    priorityColor: colors.error,
-    items: [
-      { id: 'water_pump', label: 'Pompe à eau', icon: Wrench },
-      { id: 'thermostat', label: 'Thermostat', icon: Thermometer },
-      { id: 'cooling_system', label: 'Radiateur', icon: Activity },
-      { id: 'coolant', label: 'Refroidissement', icon: Droplets },
-    ]
-  },
-  {
-    title: 'Transmission & embrayage',
-    description: 'Passage de puissance aux roues.',
-    enjeu: 'Agrément de conduite + fiabilité.',
-    priority: 'Plus sollicité sur 6 cylindres et M.',
-    icon: ZapOff,
-    priorityColor: colors.warning,
-    items: [
-      { id: 'gearbox_oil', label: 'Huile boîte de vitesses', icon: Settings },
-      { id: 'differential_oil', label: 'Huile différentiel', icon: Settings },
-      { id: 'clutch', label: 'Embrayage', icon: ZapOff },
-      { id: 'accessory_belt', label: 'Courroie accessoires', icon: RefreshCcw },
-      { id: 'pulleys', label: 'Galets', icon: Circle },
-    ]
-  },
-  {
-    title: 'Trains roulants & suspension',
-    description: 'Tenue de route et comportement.',
-    enjeu: 'Stabilité, précision de conduite.',
-    priority: 'Point faible structurel de la Z3.',
-    icon: Layers,
-    priorityColor: colors.error,
-    items: [
-      { id: 'shocks', label: 'Amortisseurs', icon: ArrowUpDown },
-      { id: 'bushings', label: 'Silentblocs', icon: Layers },
-    ]
-  },
-  {
-    title: 'Système de freinage',
-    description: 'Sécurité avant tout.',
-    enjeu: 'Sécurité.',
-    priority: 'À ne jamais négliger.',
-    icon: Disc,
-    priorityColor: colors.error,
-    items: [
-      { id: 'brake_fluid', label: 'Liquide de frein', icon: Droplets },
-      { id: 'brake_pads_front', label: 'Plaquettes (AV)', icon: Disc },
-      { id: 'brake_pads_rear', label: 'Plaquettes (AR)', icon: Disc },
-      { id: 'brake_discs_front', label: 'Disques (AV)', icon: Disc },
-      { id: 'brake_discs_rear', label: 'Disques (AR)', icon: Disc },
-    ]
-  },
-  {
-    title: 'Confort & habitacle',
-    description: 'Qualité de vie à bord.',
-    enjeu: 'Confort, qualité de l’air.',
-    priority: 'Moins critique mécaniquement.',
-    icon: Wind,
-    priorityColor: colors.success,
-    items: [
-      { id: 'cabin_filter', label: 'Filtre habitacle', icon: Wind },
-      { id: 'ac_recharge', label: 'Climatisation', icon: Wind },
-    ]
-  },
-  {
-    title: 'Électricité & énergie',
-    description: 'Démarrage et alimentation.',
-    enjeu: 'Fiabilité au quotidien.',
-    priority: 'Important si voiture peu utilisée.',
-    icon: BatteryIcon,
-    priorityColor: colors.warning,
-    items: [
-      { id: 'battery', label: 'Batterie', icon: BatteryIcon },
-    ]
-  },
-  {
-    title: 'Pneumatiques',
-    description: 'Liaison au sol.',
-    enjeu: 'Sécurité + comportement routier.',
-    priority: 'Impact direct sur plaisir de conduite.',
-    icon: Circle,
-    priorityColor: colors.error,
-    items: [
-      { id: 'tires_front', label: 'Pneus AV (avant)', icon: Circle },
-      { id: 'tires_rear', label: 'Pneus AR (arrière)', icon: Circle },
-    ]
-  }
-];
+// Helper pour mapper les noms d'icônes de la config aux composants Lucide
+const getIcon = (name: string) => {
+  const map: Record<string, any> = {
+    'Activity': Activity,
+    'Thermometer': Thermometer,
+    'ZapOff': ZapOff,
+    'Layers': Layers,
+    'Disc': Disc,
+    'Wind': Wind,
+    'Battery': BatteryIcon,
+    'Circle': Circle,
+    'droplets': Droplets,
+    'wind': Wind,
+    'thermometer': Thermometer,
+    'zap': Zap,
+    'fuel': Fuel,
+    'settings': Settings,
+    'zap-off': ZapOff,
+    'refresh-ccw': RefreshCcw,
+    'circle-dashed': CircleDashed,
+    'disc': Disc,
+    'arrow-up-down': ArrowUpDown,
+    'layers': Layers,
+    'refresh-cw': RefreshCw,
+    'shield-alert': ShieldAlert,
+    'battery': BatteryIcon,
+    'circle': Circle,
+  };
+  return map[name] || HelpCircle;
+};
+
+import { HelpCircle } from 'lucide-react-native';
+
+// Les étapes de santé sont maintenant pilotées par HEALTH_STEPS_CONFIG dans vehicleConfig.ts
 
 export default function OnboardingScreen() {
   const navigation = useNavigation<any>();
@@ -157,17 +87,10 @@ export default function OnboardingScreen() {
 
   const [wear, setWear] = useState<Record<string, { isNew: boolean, km: string }>>(() => {
     const initialState: Record<string, { isNew: boolean, km: string }> = {};
-    const defaultKeys = [
-      'oil', 'spark_plugs', 'air_filter', 'timing', 'fuel_filter', 'water_pump', 
-      'thermostat', 'cooling_system', 'coolant', 'gearbox_oil', 'differential_oil', 
-      'clutch', 'accessory_belt', 'pulleys', 'shocks', 
-      'bushings', 'brake_fluid', 'brake_pads_front', 'brake_pads_rear', 'brake_discs_front', 'brake_discs_rear', 
-      'cabin_filter', 'ac_recharge', 'battery', 'tires_front', 'tires_rear'
-    ];
     
-    defaultKeys.forEach(key => {
-      const existingKm = currentProfile?.initialWearKm?.[key];
-      initialState[key] = {
+    MAINTENANCE_ITEMS.forEach(item => {
+      const existingKm = currentProfile?.initialWearKm?.[item.id];
+      initialState[item.id] = {
         isNew: existingKm === 0 || existingKm === undefined,
         km: existingKm?.toString() || '0'
       };
@@ -215,8 +138,11 @@ export default function OnboardingScreen() {
   };
 
   const renderHealthStep = () => {
-    const currentHealthStep = HEALTH_STEPS[step - 2];
+    const currentHealthStep = HEALTH_STEPS_CONFIG[step - 2];
     if (!currentHealthStep) return null;
+
+    const priorityColor = currentHealthStep.priorityLevel === 'critical' ? colors.error : 
+                         currentHealthStep.priorityLevel === 'high' ? colors.warning : colors.success;
 
     return (
       <>
@@ -228,19 +154,23 @@ export default function OnboardingScreen() {
         </Text>
         
         <GlassCard style={styles.formCard}>
-          {currentHealthStep.items.map((item, idx) => (
-            <React.Fragment key={item.id}>
-              <WearItem 
-                id={item.id} 
-                label={item.label} 
-                icon={item.icon} 
-                wear={wear} 
-                setWear={setWear} 
-                defaultKm={form.mileage}
-              />
-              {idx < currentHealthStep.items.length - 1 && <View style={styles.divider} />}
-            </React.Fragment>
-          ))}
+          {currentHealthStep.itemIds.map((itemId, idx) => {
+            const item = MAINTENANCE_ITEMS.find(m => m.id === itemId);
+            if (!item) return null;
+            return (
+              <React.Fragment key={item.id}>
+                <WearItem 
+                  id={item.id} 
+                  label={item.label} 
+                  icon={getIcon(item.icon)} 
+                  wear={wear} 
+                  setWear={setWear} 
+                  defaultKm={form.mileage}
+                />
+                {idx < currentHealthStep.itemIds.length - 1 && <View style={styles.divider} />}
+              </React.Fragment>
+            );
+          })}
         </GlassCard>
 
         <View style={styles.footerInfoBox}>
@@ -248,8 +178,8 @@ export default function OnboardingScreen() {
             <Text style={styles.infoLabel}>💡 ENJEU</Text>
             <Text style={styles.infoValue}>{currentHealthStep.enjeu ?? 'Non spécifié'}</Text>
           </View>
-          <View style={[styles.footerInfoRow, { borderLeftColor: currentHealthStep.priorityColor }]}>
-            <Text style={[styles.infoLabel, { color: currentHealthStep.priorityColor }]}>🔴 PRIORITÉ</Text>
+          <View style={[styles.footerInfoRow, { borderLeftColor: priorityColor }]}>
+            <Text style={[styles.infoLabel, { color: priorityColor }]}>🔴 PRIORITÉ</Text>
             <Text style={styles.infoValue}>{currentHealthStep.priority ?? 'Non spécifiée'}</Text>
           </View>
         </View>
@@ -261,7 +191,7 @@ export default function OnboardingScreen() {
     <>
       <Text style={styles.sectionTitle}>💵 Investissement</Text>
       <Text style={styles.sectionDesc}>
-        Suivez la valeur et les coûts fixes de votre Z3.
+        Suivez la valeur et les coûts fixes de votre {APP_SHORT_NAME}.
       </Text>
       <GlassCard style={styles.formCard}>
         <View style={styles.inputGroup}>
@@ -343,14 +273,12 @@ export default function OnboardingScreen() {
       <Text style={styles.sectionTitle}>⚠️ Avertissement Légal</Text>
       <GlassCard style={styles.formCard}>
         <Text style={styles.paragraph}>
-          Z3 Copilot est un outil d'assistance fourni à titre indicatif. 
+          {LEGAL_TEXTS.onboardingDisclaimer}
           Les intervalles d'entretien et les alertes générées sont basés sur des données générales.
         </Text>
         <Text style={[styles.paragraph, { marginTop: spacing.md }]}>
           En continuant, vous reconnaissez que :{"\n"}
-          • Z3 Copilot ne remplace pas l'avis d'un professionnel.{"\n"}
-          • Vous restez l'unique responsable de l'entretien et de la sécurité de votre véhicule.{"\n"}
-          • L'éditeur décline toute responsabilité en cas de problème mécanique ou de sécurité.
+          {LEGAL_TEXTS.onboardingBullets.map((bullet, idx) => `• ${bullet}${idx < LEGAL_TEXTS.onboardingBullets.length - 1 ? '\n' : ''}`).join('')}
         </Text>
       </GlassCard>
     </>
@@ -373,7 +301,7 @@ export default function OnboardingScreen() {
               </TouchableOpacity>
             )}
             <MaterialCommunityIcons name="steering" size={64} color={colors.primary} />
-            <Text style={styles.title}>{currentProfile ? 'Modifier Profil' : 'Z3 Copilot'}</Text>
+            <Text style={styles.title}>{currentProfile ? 'Modifier Profil' : APP_NAME}</Text>
             <View style={styles.progressContainer}>
               <View style={styles.progressBar}>
                 <View style={[styles.progressFill, { width: `${(step / 11) * 100}%` }]} />
@@ -389,7 +317,7 @@ export default function OnboardingScreen() {
                 <GlassPicker 
                   label="Modèle" 
                   value={form.model} 
-                  options={Z3_MODELS}
+                  options={VEHICLE_MODELS}
                   onSelect={(val) => setForm({...form, model: val})}
                   icon={(props: any) => <MaterialCommunityIcons name="piston" {...props} />}
                   placeholder="Sélectionner mon moteur..."
@@ -397,7 +325,7 @@ export default function OnboardingScreen() {
                 <GlassPicker 
                   label="Année" 
                   value={form.year} 
-                  options={Z3_YEARS}
+                  options={VEHICLE_YEARS}
                   onSelect={(val) => setForm({...form, year: val})}
                   icon={Calendar}
                   placeholder="Millésime..."

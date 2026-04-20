@@ -17,9 +17,36 @@ import { GlassCard } from '../components/common/GlassCard';
 import { GlassPicker } from '../components/common/GlassPicker';
 import { InputField } from '../components/common/InputField';
 import { WearItem } from '../components/common/WearItem';
-import { Z3_MODELS, Z3_YEARS } from '../constants/vehicleData';
-import { ChevronLeft, Disc, Thermometer, Zap, Car, Calendar, Gauge, Euro, Shield } from 'lucide-react-native';
+import { 
+  VEHICLE_MODELS, VEHICLE_YEARS, MAINTENANCE_ITEMS 
+} from '../config/vehicleConfig';
+import { 
+  ChevronLeft, Disc, Thermometer, Zap, Car, Calendar, Gauge, Euro, Shield,
+  Activity, Wind, Fuel, Wrench, Layers, ArrowUpDown, ZapOff, Droplets, 
+  Battery as BatteryIcon, Circle, Settings, RefreshCcw, RefreshCw, CircleDashed
+} from 'lucide-react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+
+const getIcon = (name: string) => {
+  const map: Record<string, any> = {
+    'droplets': Droplets,
+    'wind': Wind,
+    'thermometer': Thermometer,
+    'zap': Zap,
+    'fuel': Fuel,
+    'settings': Settings,
+    'zap-off': ZapOff,
+    'refresh-ccw': RefreshCcw,
+    'circle-dashed': CircleDashed,
+    'disc': Disc,
+    'arrow-up-down': ArrowUpDown,
+    'layers': Layers,
+    'refresh-cw': RefreshCw,
+    'battery': BatteryIcon,
+    'circle': Circle,
+  };
+  return map[name] || Activity;
+};
 
 export default function EditProfileScreen() {
   const navigation = useNavigation<any>();
@@ -39,11 +66,16 @@ export default function EditProfileScreen() {
 
   const [mileage, setMileage] = useState(profile.mileage.toString());
 
-  const [wear, setWear] = useState<Record<string, { isNew: boolean, km: string }>>({
-    tires: { isNew: profile.initialWearKm.tires === 0, km: profile.initialWearKm.tires.toString() },
-    brakes: { isNew: profile.initialWearKm.brakes === 0, km: profile.initialWearKm.brakes.toString() },
-    cooling: { isNew: profile.initialWearKm.cooling === 0, km: profile.initialWearKm.cooling.toString() },
-    spark_plugs: { isNew: profile.initialWearKm.spark_plugs === 0, km: profile.initialWearKm.spark_plugs.toString() },
+  const [wear, setWear] = useState<Record<string, { isNew: boolean, km: string }>>(() => {
+    const initialState: Record<string, { isNew: boolean, km: string }> = {};
+    MAINTENANCE_ITEMS.forEach(item => {
+      const wearValue = profile.initialWearKm[item.id] ?? 0;
+      initialState[item.id] = {
+        isNew: wearValue === 0,
+        km: wearValue.toString()
+      };
+    });
+    return initialState;
   });
 
   const handleNext = () => setStep(2);
@@ -96,7 +128,7 @@ export default function EditProfileScreen() {
                 <GlassPicker 
                   label="Modèle" 
                   value={form.model} 
-                  options={Z3_MODELS}
+                  options={VEHICLE_MODELS}
                   onSelect={(val) => setForm({...form, model: val})}
                   icon={(props: any) => <MaterialCommunityIcons name="piston" {...props} />}
                   placeholder="Sélectionner mon moteur..."
@@ -104,7 +136,7 @@ export default function EditProfileScreen() {
                 <GlassPicker 
                   label="Année" 
                   value={form.year} 
-                  options={Z3_YEARS}
+                  options={VEHICLE_YEARS}
                   onSelect={(val) => setForm({...form, year: val})}
                   icon={Calendar}
                   placeholder="Millésime..."
@@ -147,13 +179,19 @@ export default function EditProfileScreen() {
                 Mettez à jour l'usure de vos consommables pour ajuster les alertes d'entretien.
               </Text>
               <GlassCard style={styles.formCard}>
-                <WearItem id="tires" label="Pneus" icon={Disc} wear={wear} setWear={setWear} />
-                <View style={styles.divider} />
-                <WearItem id="brakes" label="Freins" icon={Disc} wear={wear} setWear={setWear} />
-                <View style={styles.divider} />
-                <WearItem id="cooling" label="Refroidissement" icon={Thermometer} wear={wear} setWear={setWear} />
-                <View style={styles.divider} />
-                <WearItem id="spark_plugs" label="Bougies" icon={Zap} wear={wear} setWear={setWear} />
+                {MAINTENANCE_ITEMS.map((item, idx) => (
+                  <React.Fragment key={item.id}>
+                    <WearItem 
+                      id={item.id} 
+                      label={item.label} 
+                      icon={getIcon(item.icon)} 
+                      wear={wear} 
+                      setWear={setWear} 
+                      defaultKm={mileage}
+                    />
+                    {idx < MAINTENANCE_ITEMS.length - 1 && <View style={styles.divider} />}
+                  </React.Fragment>
+                ))}
               </GlassCard>
 
               <View style={styles.buttonRow}>

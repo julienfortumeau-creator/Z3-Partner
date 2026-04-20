@@ -1,6 +1,7 @@
 import * as Print from 'expo-print';
 import * as Sharing from 'expo-sharing';
 import { VehicleProfile, Expense } from '../store/useVehicleStore';
+import { APP_NAME, BRAND_COLORS, LEGAL_TEXTS } from '../config/vehicleConfig';
 
 /**
  * Génère un PDF professionnel de l'historique complet du véhicule.
@@ -14,7 +15,7 @@ export const generateMaintenancePDF = async (profile: VehicleProfile, expenses: 
     <html lang="fr">
     <head>
       <meta charset="UTF-8">
-      <title>Carnet d'Entretien - Z3 Copilot</title>
+      <title>${LEGAL_TEXTS.pdfTitle}</title>
       <style>
         body {
           font-family: 'Helvetica', 'Arial', sans-serif;
@@ -27,12 +28,12 @@ export const generateMaintenancePDF = async (profile: VehicleProfile, expenses: 
           display: flex;
           justify-content: space-between;
           align-items: center;
-          border-bottom: 2px solid #0066b2;
+          border-bottom: 2px solid ${BRAND_COLORS.primary};
           padding-bottom: 20px;
           margin-bottom: 30px;
         }
         .logo {
-          color: #0066b2;
+          color: ${BRAND_COLORS.primary};
           font-size: 28px;
           font-weight: bold;
           letter-spacing: -1px;
@@ -69,7 +70,7 @@ export const generateMaintenancePDF = async (profile: VehicleProfile, expenses: 
           margin: 0 0 5px;
           font-size: 11px;
           text-transform: uppercase;
-          color: #0066b2;
+          color: ${BRAND_COLORS.primary};
         }
         .info-block p {
           margin: 0;
@@ -140,7 +141,7 @@ export const generateMaintenancePDF = async (profile: VehicleProfile, expenses: 
     </head>
     <body>
       <div class="header">
-        <div class="logo">Z3 <span>Copilot</span></div>
+        <div class="logo">${APP_NAME.split(' ')[0]} <span>${APP_NAME.split(' ')[1] || ''}</span></div>
         <div class="document-title">
           <h1>Journal de Maintenance</h1>
           <p>Généré le ${new Date().toLocaleDateString('fr-FR')}</p>
@@ -207,8 +208,8 @@ export const generateMaintenancePDF = async (profile: VehicleProfile, expenses: 
       </table>
 
       <div class="footer">
-        <p>Ce document a été généré via l'application Z3 Copilot. Les données sont déclaratives et basées sur l'historique saisi par l'utilisateur.</p>
-        <p>&copy; ${new Date().getFullYear()} Z3 Copilot - Compagnon d'Entretien BMW Z3</p>
+        <p>${LEGAL_TEXTS.maintenanceDisclaimer}</p>
+        <p>${LEGAL_TEXTS.pdfFooter}</p>
       </div>
     </body>
     </html>

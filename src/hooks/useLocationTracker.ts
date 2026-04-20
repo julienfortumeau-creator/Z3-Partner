@@ -4,6 +4,7 @@ import * as TaskManager from 'expo-task-manager';
 import { LOCATION_TRACKING_TASK } from '../services/LocationTask';
 
 import { useVehicleStore } from '../store/useVehicleStore';
+import { APP_NAME, BRAND_COLORS } from '../config/vehicleConfig';
 
 export const useLocationTracker = () => {
   const gpsEnabled = useVehicleStore((state) => state.gpsEnabled);
@@ -37,9 +38,9 @@ export const useLocationTracker = () => {
         timeInterval: 10000,
         distanceInterval: 20,
         foregroundService: {
-          notificationTitle: "Z3 Copilot",
+          notificationTitle: APP_NAME,
           notificationBody: "Suivi de trajet actif",
-          notificationColor: "#0066b2",
+          notificationColor: BRAND_COLORS.primary,
         },
         pausesUpdatesAutomatically: true,
       });

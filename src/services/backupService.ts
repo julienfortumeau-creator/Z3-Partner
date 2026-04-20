@@ -4,7 +4,7 @@ import * as DocumentPicker from 'expo-document-picker';
 import { useVehicleStore } from '../store/useVehicleStore';
 import { Alert } from 'react-native';
 
-const BACKUP_FILENAME = 'z3_copilot_backup.json';
+import { BACKUP_FILENAME, APP_NAME } from '../config/vehicleConfig';
 
 /**
  * Exporte l'intégralité des données de l'application vers un fichier JSON.
@@ -29,7 +29,7 @@ export const exportData = async () => {
 
     await Sharing.shareAsync(fileUri, {
       mimeType: 'application/json',
-      dialogTitle: 'Exporter ma sauvegarde Z3 Copilot',
+      dialogTitle: `Exporter ma sauvegarde ${APP_NAME}`,
       UTI: 'public.json',
     });
   } catch (error) {

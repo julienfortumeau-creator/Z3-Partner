@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, SafeAreaView, ScrollView, TouchableOpacity } from 'react-native';
 import { colors, spacing, typography } from '../theme/colors';
+import { LEGAL_TEXTS } from '../config/vehicleConfig';
 import { GlassCard } from '../components/common/GlassCard';
 import { ChevronLeft } from 'lucide-react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -23,12 +24,12 @@ export default function PrivacyPolicyScreen() {
           
           <Text style={styles.sectionTitle}>Engagement</Text>
           <Text style={styles.paragraph}>
-            L'application Z3 Copilot s'engage à respecter votre vie privée. Cette politique détaille comment nous traitons vos données.
+            {LEGAL_TEXTS.privacyIntro}
           </Text>
 
           <Text style={styles.sectionTitle}>1. Données Collectées Localement</Text>
           <Text style={styles.paragraph}>
-            Z3 Copilot est une application axée sur la confidentialité. La majorité des données que vous saisissez (profil du véhicule, dépenses, historique de maintenance) sont stockées uniquement sur votre appareil.
+            {LEGAL_TEXTS.privacyStorage}
           </Text>
 
           <Text style={styles.sectionTitle}>2. Données de Localisation (GPS)</Text>

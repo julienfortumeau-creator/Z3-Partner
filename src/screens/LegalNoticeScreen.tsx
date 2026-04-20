@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, SafeAreaView, ScrollView, TouchableOpacity } from 'react-native';
 import { colors, spacing, typography } from '../theme/colors';
+import { LEGAL_TEXTS } from '../config/vehicleConfig';
 import { GlassCard } from '../components/common/GlassCard';
 import { ChevronLeft } from 'lucide-react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -23,12 +24,12 @@ export default function LegalNoticeScreen() {
           
           <Text style={styles.sectionTitle}>Limitation de Responsabilité</Text>
           <Text style={styles.paragraph}>
-            L'application Z3 Copilot est un outil de suivi informatif. Les recommandations d'entretien, de remplacements de pièces et les échéances kilométriques fournies par l'application sont basées sur des principes généraux.
+            {LEGAL_TEXTS.legalNotice}
           </Text>
 
           <Text style={styles.sectionTitle}>1. Recommandations à Titre Indicatif</Text>
           <Text style={styles.paragraph}>
-            En aucun cas les informations de Z3 Copilot ne peuvent se substituer à l'avis d'un professionnel qualifié, d'un mécanicien certifié ou aux préconisations officielles de BMW adaptées à l'état réel et précis de votre véhicule.
+            {LEGAL_TEXTS.legalNoSubstitute}
           </Text>
 
           <Text style={styles.sectionTitle}>2. Responsabilité de l'Entretien</Text>
@@ -43,7 +44,7 @@ export default function LegalNoticeScreen() {
 
           <Text style={styles.sectionTitle}>4. Acceptation</Text>
           <Text style={styles.paragraph}>
-            Ce document récapitule les termes juridiques acceptés lors de l'enregistrement initial de votre véhicule dans l'application. En poursuivant l'utilisation de Z3 Copilot, vous maintenez votre accord avec ces conditions.
+            {LEGAL_TEXTS.legalAcceptance}
           </Text>
         </GlassCard>
       </ScrollView>

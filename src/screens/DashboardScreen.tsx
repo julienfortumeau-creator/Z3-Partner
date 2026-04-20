@@ -8,6 +8,7 @@ import { Car, Fuel, Shield, AlertTriangle, CheckCircle2 } from 'lucide-react-nat
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 import { getMaintenanceSchema } from '../utils/maintenanceSchema';
+import { APP_NAME, APP_SHORT_NAME, VEHICLE_PROFILE_IMAGE, LEGAL_TEXTS } from '../config/vehicleConfig';
 import { calculateAverageConsumption } from '../utils/fuelAnalytics';
 import { calculateBudgetForecast } from '../utils/mileageAnalytics';
 
@@ -121,9 +122,9 @@ export default function DashboardScreen() {
     <SafeAreaView style={styles.container}>
       <View style={styles.fixedHeader}>
         <View style={styles.headerRow}>
-          <Text style={styles.appTitle}>Z3 <Text style={styles.appTitleLight}>Copilot</Text></Text>
+          <Text style={styles.appTitle}>{APP_SHORT_NAME} <Text style={styles.appTitleLight}>Copilot</Text></Text>
           <Image 
-            source={require('../../assets/z3_profile.png')} 
+            source={VEHICLE_PROFILE_IMAGE} 
             style={styles.headerProfileImage}
             resizeMode="contain"
           />
@@ -256,7 +257,7 @@ export default function DashboardScreen() {
 
         <View style={styles.disclaimerContainer}>
           <Text style={styles.disclaimerText}>
-            Z3 Copilot fournit des recommandations à titre indicatif. L'entretien et la sécurité du véhicule restent sous votre entière responsabilité.
+            {LEGAL_TEXTS.disclaimer}
           </Text>
         </View>
 

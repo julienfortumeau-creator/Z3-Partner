@@ -15,6 +15,7 @@ import { PremiumButton } from '../components/common/PremiumButton';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ChevronLeft, Mail, ExternalLink, HelpCircle, Heart, Send } from 'lucide-react-native';
 import { useNavigation } from '@react-navigation/native';
+import { APP_NAME, APP_VERSION, APP_SHORT_NAME, COMMUNITY_LINKS } from '../config/vehicleConfig';
 
 export default function SupportScreen() {
   const navigation = useNavigation();
@@ -111,7 +112,7 @@ export default function SupportScreen() {
           </LinearGradient>
         </View>
 
-        <Text style={styles.sectionTitle}>Communauté Z3</Text>
+        <Text style={styles.sectionTitle}>Communauté {APP_SHORT_NAME}</Text>
         <View style={styles.cardWrapper}>
           <LinearGradient
             colors={['#3a3a3a', '#1a1a1a']}
@@ -119,26 +120,19 @@ export default function SupportScreen() {
             end={{ x: 1, y: 1 }}
             style={styles.linkCard}
           >
-            <TouchableOpacity 
-              style={styles.linkRow} 
-              onPress={() => handleLink('https://www.bmwz3club.fr/')}
-            >
-              <View style={styles.linkInfo}>
-                <HelpCircle color={colors.textSecondary} size={20} />
-                <Text style={styles.linkText}>BMW Z3 Club France</Text>
-              </View>
-              <ExternalLink color={colors.textMuted} size={16} />
-            </TouchableOpacity>
-            <TouchableOpacity 
-              style={styles.linkRow} 
-              onPress={() => handleLink('https://www.forumbmw.net/')}
-            >
-              <View style={styles.linkInfo}>
-                <HelpCircle color={colors.textSecondary} size={20} />
-                <Text style={styles.linkText}>Forum BMW</Text>
-              </View>
-              <ExternalLink color={colors.textMuted} size={16} />
-            </TouchableOpacity>
+            {COMMUNITY_LINKS.map((link, idx) => (
+              <TouchableOpacity 
+                key={idx}
+                style={styles.linkRow} 
+                onPress={() => handleLink(link.url)}
+              >
+                <View style={styles.linkInfo}>
+                  <HelpCircle color={colors.textSecondary} size={20} />
+                  <Text style={styles.linkText}>{link.name}</Text>
+                </View>
+                <ExternalLink color={colors.textMuted} size={16} />
+              </TouchableOpacity>
+            ))}
           </LinearGradient>
         </View>
 
@@ -146,7 +140,7 @@ export default function SupportScreen() {
           <View style={styles.heartBox}>
             <Heart color={colors.error} size={16} fill={colors.error} />
           </View>
-          <Text style={styles.creditsText}>Z3 Copilot v1.0.0</Text>
+          <Text style={styles.creditsText}>{APP_NAME} v{APP_VERSION}</Text>
           <Text style={styles.subCredits}>Développé par un passionné pour des passionnés</Text>
         </View>
       </ScrollView>

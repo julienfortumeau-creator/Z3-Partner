@@ -16,6 +16,7 @@ import { colors, spacing, typography } from '../../theme/colors';
 import { GlassCard } from './GlassCard';
 import { Check, X, ArrowUpRight, Gauge } from 'lucide-react-native';
 import * as Haptics from 'expo-haptics';
+import { APP_SHORT_NAME } from '../../config/vehicleConfig';
 
 interface MileageModalProps {
   visible: boolean;
@@ -105,7 +106,7 @@ export const MileageModal = ({ visible, onClose, suggestedKms }: MileageModalPro
                 activeOpacity={0.8}
               >
                 <Check color="#FFF" size={24} style={{ marginRight: 8 }} />
-                <Text style={styles.confirmButtonText}>Mettre à jour mon Z3</Text>
+                <Text style={styles.confirmButtonText}>Mettre à jour mon {APP_SHORT_NAME}</Text>
               </TouchableOpacity>
             </GlassCard>
           </KeyboardAvoidingView>

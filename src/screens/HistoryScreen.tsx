@@ -15,6 +15,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Wrench, Fuel, Sparkles, Plus, MoreHorizontal, Clock, ArrowRight } from 'lucide-react-native';
 import { getMaintenanceSchema } from '../utils/maintenanceSchema';
 import { calculateGlobalDailyAverage } from '../utils/mileageAnalytics';
+import { APP_SHORT_NAME } from '../config/vehicleConfig';
 
 type TimelineItem = {
   id: string;
@@ -149,7 +150,7 @@ export default function HistoryScreen() {
       case 'maintenance': return 'Réparation';
       case 'fuel': return 'Carburant';
       case 'aesthetic': return 'Polish';
-      case 'status': return 'Votre Z3';
+      case 'status': return `Votre ${APP_SHORT_NAME}`;
       case 'action': return 'Commencer';
       default: return 'Autre';
     }
@@ -268,7 +269,7 @@ export default function HistoryScreen() {
         <View style={styles.header}>
           <View>
             <Text style={styles.title}>Entretien</Text>
-            <Text style={styles.subtitle}>Passé & Futur de votre Z3</Text>
+            <Text style={styles.subtitle}>Passé & Futur de votre {APP_SHORT_NAME}</Text>
           </View>
           <TouchableOpacity style={styles.addButton} onPress={openAddModal}>
             <Plus color="#FFF" size={28} />
