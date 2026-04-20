@@ -12,6 +12,8 @@ import { generateMaintenancePDF } from '../utils/pdfGenerator';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/MainNavigator';
+import { Bug } from 'lucide-react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function SettingsScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -45,6 +47,20 @@ export default function SettingsScreen() {
         { text: "Déconnexion", style: "destructive", onPress: () => navigation.replace('Onboarding') }
       ]
     );
+  };
+
+  const showGPSLogs = async () => {
+    try {
+      const logsStr = await AsyncStorage.getItem('@gps_logs');
+      const logs = logsStr ? JSON.parse(logsStr) : [];
+      if (logs.length === 0) {
+        Alert.alert("GPS Logs", "Aucun log enregistré pour le moment.");
+      } else {
+        Alert.alert("GPS Logs (50 derniers)", logs.join('\n'));
+      }
+    } catch (e) {
+      Alert.alert("Erreur", "Impossible de lire les logs.");
+    }
   };
 
   const handleGPSToggle = async (value: boolean) => {
@@ -135,6 +151,15 @@ export default function SettingsScreen() {
           value={notificationsEnabled}
           onValueChange={setNotificationsEnabled}
         />
+
+        <Text style={styles.sectionTitle}>Diagnostic (Tests)</Text>
+        <GlassCard style={styles.menuContainer}>
+          <MenuLink 
+            label="Voir les logs GPS" 
+            icon={Bug} 
+            onPress={showGPSLogs}
+          />
+        </GlassCard>
 
         <Text style={styles.sectionTitle}>Sauvegarde & Synchronisation</Text>
         <GlassCard style={styles.menuContainer}>

@@ -1,6 +1,7 @@
 import * as TaskManager from 'expo-task-manager';
 import * as Location from 'expo-location';
 import * as Notifications from 'expo-notifications';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { LOCATION_TASK_NAME } from '../config/vehicleConfig';
 
@@ -24,14 +25,21 @@ function getDistance(lat1: number, lon1: number, lat2: number, lon2: number): nu
   return R * c; 
 }
 
-let lastPoint: { latitude: number, longitude: number } | null = null;
-let totalTripDistance = 0;
-let isDriving = false;
-let lastMoveTime = Date.now();
+const STORAGE_KEY = '@gps_trip_state';
+const LOGS_KEY = '@gps_logs';
+
+async function addLog(message: string) {
+  try {
+    const logsStr = await AsyncStorage.getItem(LOGS_KEY);
+    const logs = logsStr ? JSON.parse(logsStr) : [];
+    logs.unshift(`[${new Date().toLocaleTimeString()}] ${message}`);
+    await AsyncStorage.setItem(LOGS_KEY, JSON.stringify(logs.slice(0, 50)));
+  } catch (e) {}
+}
 
 TaskManager.defineTask(LOCATION_TRACKING_TASK, async ({ data, error }) => {
   if (error) {
-    console.error('BG Location Error:', error);
+    await addLog(`Erreur: ${error.message}`);
     return;
   }
   
@@ -40,30 +48,69 @@ TaskManager.defineTask(LOCATION_TRACKING_TASK, async ({ data, error }) => {
     const location = locations[0];
     const { latitude, longitude, speed } = location.coords;
 
+    // Charger l'état actuel
+    const stateStr = await AsyncStorage.getItem(STORAGE_KEY);
+    let state = stateStr ? JSON.parse(stateStr) : {
+      lastPoint: null,
+      totalTripDistance: 0,
+      isDriving: false,
+      lastMoveTime: Date.now(),
+      lastStationCheckTime: 0,
+    };
+
+    const GAS_STATION_KEYWORDS = ['Station', 'Total', 'Shell', 'Esso', 'BP', 'Avia', 'Eni', 'Relais', 'Garage', 'Carrefour', 'Leclerc', 'Intermarché', 'Super U', 'Auchan'];
+
     // Détection de mouvement (> 15 km/h)
-    // speed est en m/s -> 15 km/h = 4.16 m/s
     if (speed > 4.16) {
-      if (!isDriving) {
-        console.log('GPS BG: Trajet commencé');
-        isDriving = true;
-        totalTripDistance = 0;
+      if (!state.isDriving) {
+        await addLog('Trajet commencé');
+        state.isDriving = true;
+        state.totalTripDistance = 0;
       }
-      lastMoveTime = Date.now();
+      state.lastMoveTime = Date.now();
     }
 
-    if (isDriving && lastPoint) {
-      const dist = getDistance(lastPoint.latitude, lastPoint.longitude, latitude, longitude);
-      // On ignore les sauts GPS aberrants (> 500m entre deux points rapprochés)
+    if (state.isDriving && state.lastPoint) {
+      const dist = getDistance(state.lastPoint.latitude, state.lastPoint.longitude, latitude, longitude);
       if (dist < 500) {
-        totalTripDistance += dist;
+        state.totalTripDistance += dist;
       }
     }
 
-    lastPoint = { latitude, longitude };
+    state.lastPoint = { latitude, longitude };
+
+    // DÉTECTION STATION SERVICE
+    // Si arrêté (< 1m/s) depuis plus de 2 minutes ET pas de check depuis 10 minutes
+    if (speed < 1 && (Date.now() - state.lastMoveTime > 120000) && (Date.now() - state.lastStationCheckTime > 600000)) {
+      state.lastStationCheckTime = Date.now();
+      try {
+        const addr = await Location.reverseGeocodeAsync({ latitude, longitude });
+        if (addr && addr.length > 0) {
+          const place = addr[0];
+          const searchStr = `${place.name} ${place.street}`.toLowerCase();
+          const isStation = GAS_STATION_KEYWORDS.some(kw => searchStr.includes(kw.toLowerCase()));
+          
+          if (isStation) {
+            await addLog(`Station détectée: ${place.name}`);
+            await Notifications.scheduleNotificationAsync({
+              content: {
+                title: "Station service détectée ⛽",
+                body: `${place.name || 'Une station'} a été détectée. Ajouter un plein ?`,
+                data: { type: 'fuel_add' },
+              },
+              trigger: null,
+            });
+          }
+        }
+      } catch (e) {
+        await addLog("Erreur Geocoding Station");
+      }
+    }
 
     // Détection de fin de trajet (arrêt > 5 minutes)
-    if (isDriving && speed < 1 && (Date.now() - lastMoveTime > 300000)) {
-       const kms = Math.round(totalTripDistance / 1000);
+    if (state.isDriving && speed < 1 && (Date.now() - state.lastMoveTime > 300000)) {
+       const kms = Math.round(state.totalTripDistance / 1000);
+       await addLog(`Fin de trajet: ${kms} km détectés`);
        
        if (kms >= 1) {
          await Notifications.scheduleNotificationAsync({
@@ -76,8 +123,11 @@ TaskManager.defineTask(LOCATION_TRACKING_TASK, async ({ data, error }) => {
          });
        }
        
-       isDriving = false;
-       totalTripDistance = 0;
+       state.isDriving = false;
+       state.totalTripDistance = 0;
     }
+
+    // Sauvegarder l'état
+    await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   }
 });

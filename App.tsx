@@ -9,6 +9,14 @@ import { NavigationContainer, DefaultTheme, Theme, createNavigationContainerRef 
 
 export const navigationRef = createNavigationContainerRef();
 
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+  }),
+});
+
 const DarkTheme: Theme = {
   dark: true,
   colors: {
@@ -29,9 +37,11 @@ export default function App() {
   React.useEffect(() => {
     const subscription = Notifications.addNotificationResponseReceivedListener(response => {
       const data = response.notification.request.content.data;
-      if (data && data.type === 'mileage_update' && data.suggestedKms) {
-        if (navigationRef.isReady()) {
+      if (data && navigationRef.isReady()) {
+        if (data.type === 'mileage_update' && data.suggestedKms) {
           navigationRef.navigate('AddMileage' as any, { suggestedKms: data.suggestedKms });
+        } else if (data.type === 'fuel_add') {
+          navigationRef.navigate('AddExpense' as any, { initialCategory: 'Carburant' });
         }
       }
     });

@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import * as Location from 'expo-location';
 import * as TaskManager from 'expo-task-manager';
+import * as Notifications from 'expo-notifications';
 import { LOCATION_TRACKING_TASK } from '../services/LocationTask';
 
 import { useVehicleStore } from '../store/useVehicleStore';
@@ -26,6 +27,11 @@ export const useLocationTracker = () => {
       }
 
       // 2. Demande de permissions
+      const { status: notificationStatus } = await Notifications.requestPermissionsAsync();
+      if (notificationStatus !== 'granted') {
+        console.log('GPS: Permissions notifications refusées');
+      }
+
       const { status: foregroundStatus } = await Location.requestForegroundPermissionsAsync();
       if (foregroundStatus !== 'granted') return;
 

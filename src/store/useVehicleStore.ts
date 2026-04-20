@@ -24,12 +24,13 @@ export interface GarageInfo {
 export interface VehicleProfile {
   model: string;
   year: string;
-  mileage: number;
+  acquisitionMileage: number;
+  mileage: number; // Kilométrage actuel (calculé : acquisition + somme(trajets))
   purchasePrice: number;
   acquisitionDate: string;
   isCoupé: boolean;
   insuranceCost: number;
-  initialWearKm: Record<string, number>; // Usure enregistrée à l'onboarding
+  initialWearKm: Record<string, number>;
   profileLastSavedMileage?: number;
   garage?: GarageInfo;
 }
@@ -112,20 +113,62 @@ export const useVehicleStore = create<VehicleState>()(
 
       addTrip: (trip) => {
         const newTrip = { ...trip, id: Date.now().toString() };
-        set((state) => ({
-          trips: [newTrip, ...state.trips].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()),
-          profile: state.profile ? { ...state.profile, mileage: trip.mileageAtEnd } : null
-        }));
+        set((state) => {
+          // 1. Ajouter le nouveau trajet et trier chronologiquement (plus vieux au plus récent pour le calcul)
+          const allTrips = [...state.trips, newTrip].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+          
+          // 2. Recalculer le kilométrage d'arrivée pour CHAQUE trajet de l'histoire
+          let runningMileage = state.profile?.acquisitionMileage || 0;
+          const recalculatedTrips = allTrips.map(t => {
+            runningMileage += t.distance;
+            return { ...t, mileageAtEnd: runningMileage };
+          });
+
+          // 3. Trier pour l'affichage (plus récent en premier)
+          const sortedForDisplay = [...recalculatedTrips].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+          
+          return {
+            trips: sortedForDisplay,
+            profile: state.profile ? { ...state.profile, mileage: runningMileage } : null
+          };
+        });
       },
 
-      updateTrip: (id, updates) => set((state) => ({
-        trips: state.trips.map(t => t.id === id ? { ...t, ...updates } : t)
-          .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-      })),
+      updateTrip: (id, updates) => set((state) => {
+        const allTrips = state.trips.map(t => t.id === id ? { ...t, ...updates } : t)
+          .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+        
+        let runningMileage = state.profile?.acquisitionMileage || 0;
+        const recalculatedTrips = allTrips.map(t => {
+          runningMileage += t.distance;
+          return { ...t, mileageAtEnd: runningMileage };
+        });
 
-      deleteTrip: (id) => set((state) => ({
-        trips: state.trips.filter(t => t.id !== id)
-      })),
+        const sortedForDisplay = [...recalculatedTrips].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+        return {
+          trips: sortedForDisplay,
+          profile: state.profile ? { ...state.profile, mileage: runningMileage } : null
+        };
+      }),
+
+      deleteTrip: (id) => set((state) => {
+        const allTrips = state.trips.filter(t => t.id !== id)
+          .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+        
+        let runningMileage = state.profile?.acquisitionMileage || 0;
+        const recalculatedTrips = allTrips.map(t => {
+          runningMileage += t.distance;
+          return { ...t, mileageAtEnd: runningMileage };
+        });
+
+        const sortedForDisplay = [...recalculatedTrips].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+        return {
+          trips: sortedForDisplay,
+          profile: state.profile ? { ...state.profile, mileage: runningMileage } : null
+        };
+      }),
       
       setGarage: (garage) => set((state) => ({
         profile: state.profile ? { ...state.profile, garage } : null

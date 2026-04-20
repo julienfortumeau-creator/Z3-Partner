@@ -121,7 +121,8 @@ export default function OnboardingScreen() {
     setProfile({
       model: form.model,
       year: form.year,
-      mileage: parseInt(form.mileage) || 0,
+      acquisitionMileage: parseInt(form.mileage) || 0,
+      mileage: parseInt(form.mileage) || 0, // Initialement égal à l'acquisition
       purchasePrice: parseInt(form.price) || 0,
       insuranceCost: parseInt(form.insurance) || 0,
       acquisitionDate: form.acquisitionDate,
@@ -330,15 +331,71 @@ export default function OnboardingScreen() {
                   icon={Calendar}
                   placeholder="Millésime..."
                 />
+                
+                <View style={styles.inputGroup}>
+                  <Text style={styles.inputLabel}>Date d'achat / début du suivi</Text>
+                  <TouchableOpacity 
+                    style={styles.datePickerButton} 
+                    onPress={() => setShowDatePicker(true)}
+                  >
+                    <Calendar size={20} color={colors.primary} />
+                    <Text style={styles.dateText}>
+                      {new Date(form.acquisitionDate).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+
+                {showDatePicker && Platform.OS === 'android' && (
+                  <DateTimePicker
+                    value={new Date(form.acquisitionDate)}
+                    mode="date"
+                    display="default"
+                    onChange={(event, selectedDate) => {
+                      setShowDatePicker(false);
+                      if (selectedDate) {
+                        setForm({...form, acquisitionDate: selectedDate.toISOString().split('T')[0]});
+                      }
+                    }}
+                    maximumDate={new Date()}
+                  />
+                )}
+
                 <InputField 
-                  label="Kilométrage actuel" 
+                  label="Kilométrage à cette date" 
                   value={form.mileage} 
                   onChange={(t: string) => setForm({...form, mileage: t})}
                   icon={Gauge}
-                  placeholder="ex: 125000"
+                  placeholder="ex: 110000"
                   keyboardType="numeric"
                 />
               </GlassCard>
+
+              {/* Modal iOS DatePicker */}
+              {Platform.OS === 'ios' && (
+                <Modal visible={showDatePicker} transparent animationType="slide">
+                  <View style={styles.modalOverlay}>
+                    <View style={styles.modalContent}>
+                      <View style={styles.modalHeader}>
+                        <TouchableOpacity onPress={() => setShowDatePicker(false)}>
+                          <Text style={styles.modalDoneText}>Terminer</Text>
+                        </TouchableOpacity>
+                      </View>
+                      <DateTimePicker
+                        value={new Date(form.acquisitionDate)}
+                        mode="date"
+                        display="spinner"
+                        textColor="#FFFFFF"
+                        onChange={(event, selectedDate) => {
+                          if (selectedDate) {
+                            setForm({...form, acquisitionDate: selectedDate.toISOString().split('T')[0]});
+                          }
+                        }}
+                        maximumDate={new Date()}
+                      />
+                    </View>
+                  </View>
+                </Modal>
+              )}
             </>
           ) : step === 10 ? (
             renderInvestmentStep()

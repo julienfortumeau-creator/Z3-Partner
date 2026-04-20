@@ -14,10 +14,16 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.ftmx.z3copilot",
+      "buildNumber": "2",
       "infoPlist": {
+        "UIBackgroundModes": [
+          "location",
+          "fetch",
+          "processing"
+        ],
         "NSCameraUsageDescription": "Cette application nécessite l'accès à l'appareil photo pour scanner vos factures d'entretien.",
-        "NSLocationWhenInUseUsageDescription": "L'application utilise le GPS pour suivre vos trajets et recommander l'ajout de kilométrage ou de pleins d'essence.",
-        "NSLocationAlwaysAndWhenInUseUsageDescription": "L'application utilise le GPS en arrière-plan pour détecter vos arrêts à la station-service.",
+        "NSLocationWhenInUseUsageDescription": "L'application utilise le GPS pour suivre vos trajets et recommander l'ajout de kilométrage.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "L'application utilise le GPS en arrière-plan pour détecter automatiquement vos trajets et calculer la distance parcourue.",
         "ITSAppUsesNonExemptEncryption": false,
         "applePrivacyManifest": {
           "NSPrivacyAccessedAPITypes": [
