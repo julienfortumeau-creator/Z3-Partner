@@ -58,13 +58,13 @@ export default function EditProfileScreen() {
   const [form, setForm] = useState({
     model: profile.model,
     year: profile.year,
-    get mileage() { return profile.mileage.toString() },
+    mileage: profile.acquisitionMileage.toString(),
     price: profile.purchasePrice.toString(),
     insurance: profile.insuranceCost.toString(),
     acquisitionDate: profile.acquisitionDate,
   });
 
-  const [mileage, setMileage] = useState(profile.mileage.toString());
+  const [mileage, setMileage] = useState(profile.acquisitionMileage.toString());
 
   const [wear, setWear] = useState<Record<string, { isNew: boolean, km: string }>>(() => {
     const initialState: Record<string, { isNew: boolean, km: string }> = {};
@@ -91,7 +91,7 @@ export default function EditProfileScreen() {
       ...profile,
       model: form.model,
       year: form.year,
-      mileage: parseInt(mileage) || 0,
+      acquisitionMileage: parseInt(mileage) || 0,
       purchasePrice: parseInt(form.price) || 0,
       insuranceCost: parseInt(form.insurance) || 0,
       acquisitionDate: form.acquisitionDate,
@@ -142,13 +142,22 @@ export default function EditProfileScreen() {
                   placeholder="Millésime..."
                 />
                 <InputField 
-                  label="Kilométrage actuel" 
+                  label="Kilométrage à l'achat" 
                   value={mileage} 
                   onChange={(t: string) => setMileage(t)}
                   icon={Gauge}
-                  placeholder="ex: 125000"
+                  placeholder="ex: 110000"
                   keyboardType="numeric"
                 />
+                
+                <View style={styles.infoBox}>
+                  <Activity size={18} color={colors.primary} />
+                  <View>
+                    <Text style={styles.infoBoxLabel}>KILOMÉTRAGE ACTUEL CALCULÉ</Text>
+                    <Text style={styles.infoBoxValue}>{profile.mileage.toLocaleString()} km</Text>
+                    <Text style={styles.infoBoxHelper}>Basé sur vos trajets enregistrés</Text>
+                  </View>
+                </View>
                 <InputField 
                   label="Prix d'achat (€)" 
                   value={form.price} 
@@ -279,4 +288,30 @@ const styles = StyleSheet.create({
     backgroundColor: colors.border,
     marginVertical: spacing.xs,
   },
+  infoBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    padding: spacing.md,
+    borderRadius: 12,
+    marginTop: -spacing.sm,
+    marginBottom: spacing.md,
+    gap: spacing.md,
+  },
+  infoBoxLabel: {
+    fontSize: 9,
+    fontWeight: '800',
+    color: colors.primary,
+    letterSpacing: 0.5,
+  },
+  infoBoxValue: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: colors.textPrimary,
+  },
+  infoBoxHelper: {
+    fontSize: 10,
+    color: colors.textMuted,
+    fontStyle: 'italic',
+  }
 });

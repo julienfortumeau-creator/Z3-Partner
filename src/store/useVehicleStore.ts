@@ -83,11 +83,30 @@ export const useVehicleStore = create<VehicleState>()(
       
       setNotificationsEnabled: (enabled) => set({ notificationsEnabled: enabled }),
 
-      setProfile: (profile) => set({ profile }),
+      setProfile: (profile) => set((state) => {
+        const totalTripsDistance = state.trips.reduce((sum, t) => sum + t.distance, 0);
+        return {
+          profile: {
+            ...profile,
+            mileage: profile.acquisitionMileage + totalTripsDistance
+          }
+        };
+      }),
 
-      updateMileage: (newMileage) => set((state) => ({
-        profile: state.profile ? { ...state.profile, mileage: newMileage } : null
-      })),
+      updateMileage: (newMileage) => {
+        const state = get();
+        if (!state.profile) return;
+        
+        const diff = newMileage - state.profile.mileage;
+        if (diff <= 0) return; // On ne recule pas le compteur ici
+
+        state.addTrip({
+          date: new Date().toISOString().split('T')[0],
+          distance: diff,
+          mileageAtEnd: newMileage,
+          label: 'Mise à jour manuelle'
+        });
+      },
 
       updateInitialWear: (key, km) => set((state) => ({
         profile: state.profile 

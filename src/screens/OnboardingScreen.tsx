@@ -78,7 +78,7 @@ export default function OnboardingScreen() {
   const [form, setForm] = useState({
     model: currentProfile?.model || '',
     year: currentProfile?.year || '',
-    mileage: currentProfile?.mileage.toString() || '112634',
+    mileage: currentProfile?.acquisitionMileage.toString() || '112634',
     price: currentProfile?.purchasePrice.toString() || '18500',
     insurance: currentProfile?.insuranceCost.toString() || '600',
     acquisitionDate: currentProfile?.acquisitionDate || new Date().toISOString().split('T')[0],
