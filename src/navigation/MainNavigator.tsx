@@ -13,6 +13,7 @@ import OnboardingScreen from '../screens/OnboardingScreen';
 import SupportScreen from '../screens/SupportScreen';
 import AddExpenseScreen from '../screens/AddExpenseScreen';
 import AddMileageScreen from '../screens/AddMileageScreen';
+import GuideScreen from '../screens/GuideScreen';
 import MaintenanceDetailScreen from '../screens/MaintenanceDetailScreen';
 import MyGarageScreen from '../screens/MyGarageScreen';
 import PrivacyPolicyScreen from '../screens/PrivacyPolicyScreen';
@@ -26,7 +27,8 @@ export type RootStackParamList = {
   Support: undefined;
   AddExpense: { expense?: any, initialCategory?: any };
   AddMileage: { suggestedKms?: number } | undefined;
-  MaintenanceDetail: undefined;
+  Guide: undefined;
+  MaintenanceDetail: { itemId: string };
   MyGarage: undefined;
   PrivacyPolicy: undefined;
   LegalNotice: undefined;
@@ -142,6 +144,7 @@ export default function MainNavigator() {
       <Stack.Screen name="Support" component={SupportScreen} />
       <Stack.Screen name="AddExpense" component={AddExpenseScreen} />
       <Stack.Screen name="AddMileage" component={AddMileageScreen} />
+      <Stack.Screen name="Guide" component={GuideScreen} />
       <Stack.Screen name="MaintenanceDetail" component={MaintenanceDetailScreen} />
       <Stack.Screen name="MyGarage" component={MyGarageScreen} />
       <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicyScreen} />

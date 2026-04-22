@@ -6,7 +6,7 @@ import { colors, spacing, typography } from '../theme/colors';
 import { APP_NAME, APP_VERSION, APP_TAGLINE } from '../config/vehicleConfig';
 import { GlassCard } from '../components/common/GlassCard';
 import { LinearGradient } from 'expo-linear-gradient';
-import { MapPin, Bell, LogOut, ChevronRight, User, ShieldCheck, Mail, Building2, FileText, Cloud, Download, Share2, Heart } from 'lucide-react-native';
+import { MapPin, Bell, LogOut, ChevronRight, User, ShieldCheck, Mail, Building2, FileText, Download, Share2, Heart, BookOpen } from 'lucide-react-native';
 import { exportData, importData } from '../services/backupService';
 import { generateMaintenancePDF } from '../utils/pdfGenerator';
 import { useNavigation } from '@react-navigation/native';
@@ -161,14 +161,9 @@ export default function SettingsScreen() {
           />
         </GlassCard>
 
+
         <Text style={styles.sectionTitle}>Sauvegarde & Synchronisation</Text>
         <GlassCard style={styles.menuContainer}>
-          <MenuLink 
-            label="Sauvegarder dans le Cloud" 
-            icon={Cloud} 
-            onPress={exportData}
-          />
-          <View style={styles.divider} />
           <MenuLink 
             label="Restaurer l'historique" 
             icon={Download} 
@@ -205,6 +200,12 @@ export default function SettingsScreen() {
 
         <Text style={styles.sectionTitle}>Compte</Text>
         <GlassCard style={styles.menuContainer}>
+          <MenuLink 
+            label="Guide du Copilot" 
+            icon={BookOpen} 
+            onPress={() => navigation.navigate('Guide')}
+          />
+          <View style={styles.divider} />
           <MenuLink 
             label="Soutien & Support" 
             icon={Mail} 

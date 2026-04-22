@@ -2,7 +2,7 @@
   "expo": {
     "name": "Z3 Copilot",
     "slug": "z3-copilot",
-    "version": "1.0.3",
+    "version": "1.0.5",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
@@ -14,7 +14,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.ftmx.z3copilot",
-      "buildNumber": "1",
+      "buildNumber": "5",
       "infoPlist": {
         "UIBackgroundModes": [
           "location",
@@ -54,6 +54,7 @@
         "backgroundColor": "#121212"
       },
       "package": "com.ftmx.z3copilot",
+      "versionCode": 5,
       "permissions": [
         "android.permission.ACCESS_COARSE_LOCATION",
         "android.permission.ACCESS_FINE_LOCATION",
