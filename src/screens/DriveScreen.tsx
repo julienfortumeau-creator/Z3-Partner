@@ -10,13 +10,15 @@ import {
   Alert,
   TextInput,
   KeyboardAvoidingView,
-  Platform
+  Platform,
+  ScrollView
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useVehicleStore, Trip } from '../store/useVehicleStore';
 import { colors, spacing, typography } from '../theme/colors';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Plus, Clock, ArrowUpRight, Navigation, Calendar, Trash2, X, Check } from 'lucide-react-native';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 type TimelineItem = {
   id: string;
@@ -38,6 +40,9 @@ export default function DriveScreen() {
   const [modalVisible, setModalVisible] = useState(false);
   const [editLabel, setEditLabel] = useState('');
   const [editDistance, setEditDistance] = useState('');
+  const [editDate, setEditDate] = useState(new Date().toISOString().split('T')[0]);
+  const [editNotes, setEditNotes] = useState('');
+  const [showDatePicker, setShowDatePicker] = useState(false);
 
   if (!profile) return null;
 
@@ -79,15 +84,33 @@ export default function DriveScreen() {
       setEditingTrip(trip);
       setEditLabel(trip.label);
       setEditDistance(trip.distance.toString());
+      setEditDate(trip.date);
+      setEditNotes(trip.notes || '');
       setModalVisible(true);
     }
+  };
+
+  const onDateChange = (event: any, selectedDate?: Date) => {
+    if (Platform.OS === 'android') {
+      setShowDatePicker(false);
+    }
+    if (selectedDate) {
+      setEditDate(selectedDate.toISOString().split('T')[0]);
+    }
+  };
+
+  const formatDateLabel = (dateString: string) => {
+    const d = new Date(dateString);
+    return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
   };
 
   const handleSaveEdit = () => {
     if (editingTrip) {
       updateTrip(editingTrip.id, {
         label: editLabel,
-        distance: parseInt(editDistance) || 0
+        distance: parseInt(editDistance) || 0,
+        date: editDate,
+        notes: editNotes || undefined
       });
       setModalVisible(false);
       setEditingTrip(null);
@@ -248,30 +271,66 @@ export default function DriveScreen() {
               </TouchableOpacity>
             </View>
 
-            <View style={styles.modalForm}>
-              <View style={styles.inputGroup}>
-                <Text style={styles.inputLabel}>Nom du trajet</Text>
-                <TextInput
-                  style={styles.textInput}
-                  value={editLabel}
-                  onChangeText={setEditLabel}
-                  placeholder="Ex: Balade dimanche"
-                  placeholderTextColor={colors.textMuted}
-                />
-              </View>
+            <ScrollView showsVerticalScrollIndicator={false} style={{ maxHeight: 400 }}>
+              <View style={styles.modalForm}>
+                <View style={styles.inputGroup}>
+                  <Text style={styles.inputLabel}>Nom du trajet</Text>
+                  <TextInput
+                    style={styles.textInput}
+                    value={editLabel}
+                    onChangeText={setEditLabel}
+                    placeholder="Ex: Balade dimanche"
+                    placeholderTextColor={colors.textMuted}
+                  />
+                </View>
 
-              <View style={styles.inputGroup}>
-                <Text style={styles.inputLabel}>Distance (km)</Text>
-                <TextInput
-                  style={styles.textInput}
-                  value={editDistance}
-                  onChangeText={setEditDistance}
-                  keyboardType="numeric"
-                  placeholder="Ex: 50"
-                  placeholderTextColor={colors.textMuted}
-                />
+                <View style={styles.inputGroup}>
+                  <Text style={styles.inputLabel}>Distance (km)</Text>
+                  <TextInput
+                    style={styles.textInput}
+                    value={editDistance}
+                    onChangeText={setEditDistance}
+                    keyboardType="numeric"
+                    placeholder="Ex: 50"
+                    placeholderTextColor={colors.textMuted}
+                  />
+                </View>
+
+                <View style={styles.inputGroup}>
+                  <Text style={styles.inputLabel}>Date du trajet</Text>
+                  <TouchableOpacity 
+                    style={styles.datePickerButton} 
+                    onPress={() => setShowDatePicker(true)}
+                  >
+                    <Calendar size={20} color={colors.primary} />
+                    <Text style={styles.dateText}>{formatDateLabel(editDate)}</Text>
+                  </TouchableOpacity>
+                </View>
+
+                {showDatePicker && (
+                  <DateTimePicker
+                    value={new Date(editDate)}
+                    mode="date"
+                    display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                    onChange={onDateChange}
+                    maximumDate={new Date()}
+                  />
+                )}
+
+                <View style={styles.inputGroup}>
+                  <Text style={styles.inputLabel}>Commentaires / Détails</Text>
+                  <TextInput
+                    style={[styles.textInput, styles.textArea]}
+                    value={editNotes}
+                    onChangeText={setEditNotes}
+                    placeholder="Notes sur ce trajet..."
+                    placeholderTextColor={colors.textMuted}
+                    multiline
+                    numberOfLines={3}
+                  />
+                </View>
               </View>
-            </View>
+            </ScrollView>
 
             <View style={styles.modalActions}>
               <TouchableOpacity 
@@ -473,6 +532,26 @@ const styles = StyleSheet.create({
     fontSize: 16,
     borderWidth: 1,
     borderColor: colors.border,
+  },
+  textArea: {
+    height: 80,
+    paddingTop: spacing.sm,
+    textAlignVertical: 'top',
+  },
+  datePickerButton: {
+    height: 50,
+    backgroundColor: 'rgba(255,255,255,0.05)',
+    borderRadius: 12,
+    paddingHorizontal: spacing.md,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.md,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  dateText: {
+    color: colors.textPrimary,
+    fontSize: 16,
   },
   modalActions: {
     flexDirection: 'row',

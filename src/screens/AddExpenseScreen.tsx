@@ -86,10 +86,10 @@ export default function AddExpenseScreen() {
       amount: parseFloat(amount.replace(',', '.')),
       category,
       date,
-      liters: liters ? parseFloat(liters.replace(',', '.')) : undefined,
-      mileage: mileage ? parseInt(mileage) : undefined,
-      notes: notes || undefined,
-      garageName: garageName || undefined,
+      liters: liters && category === 'fuel' ? parseFloat(liters.replace(',', '.')) : undefined,
+      mileage: mileage && (category === 'maintenance' || category === 'fuel') ? parseInt(mileage) : undefined,
+      notes: notes && category !== 'fuel' ? notes : undefined,
+      garageName: garageName && category === 'maintenance' ? garageName : undefined,
     };
 
     if (expense) {
@@ -162,6 +162,15 @@ export default function AddExpenseScreen() {
               style={styles.formCard}
             >
             <View style={styles.form}>
+              <Text style={styles.inputLabel}>Catégorie</Text>
+              <View style={styles.categoryGrid}>
+                <CategoryOption id="maintenance" label="Réparation" icon={Wrench} />
+                <CategoryOption id="aesthetic" label="Polish" icon={Sparkles} />
+                <CategoryOption id="fuel" label="Carburant" icon={Fuel} />
+                <CategoryOption id="other" label="Autre" icon={MoreHorizontal} />
+              </View>
+
+              {/* Titre - Toujours visible */}
               <View style={styles.inputGroup}>
                 <Text style={styles.inputLabel}>Titre / Description</Text>
                 <TextInput
@@ -173,6 +182,7 @@ export default function AddExpenseScreen() {
                 />
               </View>
 
+              {/* Montant - Toujours visible */}
               <View style={styles.inputGroup}>
                 <Text style={styles.inputLabel}>Montant (€)</Text>
                 <TextInput
@@ -185,6 +195,7 @@ export default function AddExpenseScreen() {
                 />
               </View>
 
+              {/* Date - Toujours visible */}
               <View style={styles.inputGroup}>
                 <Text style={styles.inputLabel}>Date de l'opération</Text>
                 <TouchableOpacity 
@@ -206,42 +217,36 @@ export default function AddExpenseScreen() {
                 )}
               </View>
 
-              <View style={styles.inputGroup}>
-                <Text style={styles.inputLabel}>Kilométrage (Compteur)</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="ex: 125000"
-                  placeholderTextColor={colors.textMuted}
-                  keyboardType="numeric"
-                  value={mileage}
-                  onChangeText={setMileage}
-                />
-              </View>
+              {/* Kilométrage - Réparation ou Carburant uniquement */}
+              {(category === 'maintenance' || category === 'fuel') && (
+                <View style={styles.inputGroup}>
+                  <Text style={styles.inputLabel}>Kilométrage (Compteur)</Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="ex: 125000"
+                    placeholderTextColor={colors.textMuted}
+                    keyboardType="numeric"
+                    value={mileage}
+                    onChangeText={setMileage}
+                  />
+                </View>
+              )}
 
-              <View style={styles.inputGroup}>
-                <Text style={styles.inputLabel}>Établissement / Garage</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="ex: BMW Service"
-                  placeholderTextColor={colors.textMuted}
-                  value={garageName}
-                  onChangeText={setGarageName}
-                />
-              </View>
+              {/* Établissement - Réparation uniquement */}
+              {category === 'maintenance' && (
+                <View style={styles.inputGroup}>
+                  <Text style={styles.inputLabel}>Établissement / Garage</Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="ex: BMW Service"
+                    placeholderTextColor={colors.textMuted}
+                    value={garageName}
+                    onChangeText={setGarageName}
+                  />
+                </View>
+              )}
 
-              <View style={styles.inputGroup}>
-                <Text style={styles.inputLabel}>Commentaires / Détails</Text>
-                <TextInput
-                  style={[styles.input, styles.textArea]}
-                  placeholder="ex: Changement des filtres et vidange 5W40..."
-                  placeholderTextColor={colors.textMuted}
-                  multiline
-                  numberOfLines={3}
-                  value={notes}
-                  onChangeText={setNotes}
-                />
-              </View>
-
+              {/* Volume - Carburant uniquement */}
               {category === 'fuel' && (
                 <View style={styles.row}>
                   <View style={[styles.inputGroup, { flex: 1, marginRight: spacing.sm }]}>
@@ -265,13 +270,21 @@ export default function AddExpenseScreen() {
                 </View>
               )}
 
-              <Text style={styles.inputLabel}>Catégorie</Text>
-              <View style={styles.categoryGrid}>
-                <CategoryOption id="maintenance" label="Réparation" icon={Wrench} />
-                <CategoryOption id="aesthetic" label="Polish" icon={Sparkles} />
-                <CategoryOption id="fuel" label="Carburant" icon={Fuel} />
-                <CategoryOption id="other" label="Autre" icon={MoreHorizontal} />
-              </View>
+              {/* Commentaires - Sauf Carburant */}
+              {category !== 'fuel' && (
+                <View style={styles.inputGroup}>
+                  <Text style={styles.inputLabel}>Commentaires / Détails</Text>
+                  <TextInput
+                    style={[styles.input, styles.textArea]}
+                    placeholder="ex: Changement des filtres et vidange 5W40..."
+                    placeholderTextColor={colors.textMuted}
+                    multiline
+                    numberOfLines={3}
+                    value={notes}
+                    onChangeText={setNotes}
+                  />
+                </View>
+              )}
 
               <View style={styles.actionRow}>
                 {expense && (

@@ -41,6 +41,7 @@ export interface Trip {
   distance: number;
   mileageAtEnd: number;
   label: string;
+  notes?: string;
 }
 
 interface VehicleState {

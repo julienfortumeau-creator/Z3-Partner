@@ -37,6 +37,7 @@ export default function AddMileageScreen() {
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showDistancePicker, setShowDistancePicker] = useState(false);
+  const [notes, setNotes] = useState('');
 
   // Array of numbers 1 to 999
   const distanceOptions = useMemo(() => Array.from({ length: 999 }, (_, i) => i + 1), []);
@@ -63,6 +64,7 @@ export default function AddMileageScreen() {
       distance,
       mileageAtEnd: profile.mileage + distance,
       label: label || `Trajet du ${formatDateLabel(date)}`,
+      notes: notes || undefined,
     });
     navigation.goBack();
   };
@@ -144,6 +146,29 @@ export default function AddMileageScreen() {
                         <Text style={styles.dateText}>{formatDateLabel(date)}</Text>
                       </TouchableOpacity>
                     </View>
+
+                    {showDatePicker && (
+                      <DateTimePicker
+                        value={new Date(date)}
+                        mode="date"
+                        display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                        onChange={onDateChange}
+                        maximumDate={new Date()}
+                      />
+                    )}
+
+                    <View style={styles.inputGroup}>
+                      <Text style={styles.inputLabel}>Commentaires / Détails</Text>
+                      <TextInput
+                        style={[styles.input, styles.textArea]}
+                        value={notes}
+                        onChangeText={setNotes}
+                        placeholder="Notes sur ce trajet..."
+                        placeholderTextColor={colors.textMuted}
+                        multiline
+                        numberOfLines={3}
+                      />
+                    </View>
                   </View>
 
                   <View style={styles.actionRow}>
@@ -157,16 +182,6 @@ export default function AddMileageScreen() {
                   </View>
                 </LinearGradient>
               </View>
-
-              {showDatePicker && (
-                <DateTimePicker
-                  value={new Date(date)}
-                  mode="date"
-                  display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-                  onChange={onDateChange}
-                  maximumDate={new Date()}
-                />
-              )}
             </ScrollView>
           </View>
         </TouchableWithoutFeedback>
@@ -318,6 +333,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     borderWidth: 1,
     borderColor: colors.border,
+  },
+  textArea: {
+    height: 80,
+    paddingTop: spacing.sm,
+    textAlignVertical: 'top',
   },
   datePickerButton: {
     height: 50,

@@ -118,17 +118,17 @@ export default function StatsScreen() {
     return { data, isEmpty: !hasExpenses && expenses.length === 0 };
   }, [expenses, profile, filter]);
 
+  const mileageStats = useMemo(() => {
+    return calculatePeriodStats(
+      trips, 
+      filter, 
+      profile?.acquisitionDate
+    );
+  }, [filter, profile, trips]);
+
   const { distanceInPeriod, costPerKm } = useMemo(() => {
-    const mileages = filteredExpenses
-      .filter(e => e.mileage !== undefined && e.mileage > 0)
-      .map(e => e.mileage as number)
-      .sort((a, b) => a - b);
-
-    if (mileages.length < 2) return { distanceInPeriod: 0, costPerKm: null };
-
-    const dist = mileages[mileages.length - 1] - mileages[0];
-    if (dist <= 0) return { distanceInPeriod: 0, costPerKm: null };
-
+    const dist = mileageStats.periodTotal;
+    
     // Prorated insurance
     let insurance = 0;
     if (profile) {
@@ -144,16 +144,13 @@ export default function StatsScreen() {
     }
 
     const total = totalFiltered + insurance;
+    
+    if (dist <= 0) return { distanceInPeriod: 0, costPerKm: null };
+    
     return { distanceInPeriod: dist, costPerKm: (total / dist).toFixed(2) };
-  }, [filteredExpenses, totalFiltered, filter, profile]);
+  }, [mileageStats, totalFiltered, filter, profile]);
 
-  const mileageStats = useMemo(() => {
-    return calculatePeriodStats(
-      trips, 
-      filter, 
-      profile?.acquisitionDate
-    );
-  }, [filter, profile, trips]);
+
 
   const forecastMonths = filter === 'month' ? 1 : 12;
 
@@ -194,7 +191,7 @@ export default function StatsScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
-        <Text style={styles.title}>Analytique</Text>
+        <Text style={styles.title}>Statistiques</Text>
 
         <View style={styles.filterRow}>
           <FilterButton type="month" label="Mois" />
