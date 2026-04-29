@@ -8,20 +8,20 @@
       "node": "22.11.0",
       "distribution": "internal",
       "ios": {
-        "image": "macos-sequoia-15.6-xcode-26.2"
+        "image": "macos-sequoia-15.3-xcode-16.2"
       }
     },
     "preview": {
       "node": "22.11.0",
       "distribution": "internal",
       "ios": {
-        "image": "macos-sequoia-15.6-xcode-26.2"
+        "image": "macos-sequoia-15.3-xcode-16.2"
       }
     },
     "prod-ios": {
       "node": "22.11.0",
       "ios": {
-        "image": "macos-sequoia-15.6-xcode-26.2"
+        "image": "macos-sequoia-15.3-xcode-16.2"
       }
     },
     "prod-android": {
@@ -33,7 +33,7 @@
     "production": {
       "node": "22.11.0",
       "ios": {
-        "image": "macos-sequoia-15.6-xcode-26.2"
+        "image": "macos-sequoia-15.3-xcode-16.2"
       },
       "android": {
         "buildType": "apk"
