@@ -40,15 +40,16 @@ export const useLocationTracker = () => {
 
       // 3. Lancement du tracking
       await Location.startLocationUpdatesAsync(LOCATION_TRACKING_TASK, {
-        accuracy: Location.Accuracy.Balanced,
-        timeInterval: 10000,
-        distanceInterval: 20,
+        accuracy: Location.Accuracy.High,
+        timeInterval: 5000,
+        distanceInterval: 10,
         foregroundService: {
           notificationTitle: APP_NAME,
           notificationBody: "Suivi de trajet actif",
           notificationColor: BRAND_COLORS.primary,
         },
         pausesUpdatesAutomatically: true,
+        activityType: Location.LocationActivityType.AutomotiveNavigation,
       });
       
       console.log('GPS: Tracking réel activé');

@@ -13,7 +13,7 @@
 // ── BRANDING ──────────────────────────────────────────────
 export const APP_NAME = 'Z3 Copilot';
 export const APP_SHORT_NAME = 'Z3';
-export const APP_VERSION = '1.0.5';
+export const APP_VERSION = '1.0.6';
 export const APP_TAGLINE = 'Passionné BMW Z3';
 export const BACKUP_FILENAME = 'z3_copilot_backup.json';
 export const LOCATION_TASK_NAME = 'Z3_COPILOT_LOCATION_TRACKING';

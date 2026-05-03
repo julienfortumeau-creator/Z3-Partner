@@ -60,7 +60,8 @@ TaskManager.defineTask(LOCATION_TRACKING_TASK, async ({ data, error }) => {
 
     const GAS_STATION_KEYWORDS = ['Station', 'Total', 'Shell', 'Esso', 'BP', 'Avia', 'Eni', 'Relais', 'Garage', 'Carrefour', 'Leclerc', 'Intermarché', 'Super U', 'Auchan'];
 
-    // Détection de mouvement (> 15 km/h)
+    // DÉTECTION DE MOUVEMENT
+    // On ne considère le trajet comme commencé que si on bouge vraiment (> 15 km/h)
     if (speed > 4.16) {
       if (!state.isDriving) {
         await addLog('Trajet commencé');
@@ -70,8 +71,15 @@ TaskManager.defineTask(LOCATION_TRACKING_TASK, async ({ data, error }) => {
       state.lastMoveTime = Date.now();
     }
 
-    if (state.isDriving && state.lastPoint) {
+    // ACCUMULATION DE LA DISTANCE (Optimisée)
+    // On ne cumule que si :
+    // 1. On est en mode conduite
+    // 2. On a un point précédent
+    // 3. La précision du point actuel est bonne (< 30 mètres)
+    // 4. On bouge réellement (vitesse > 2 m/s, soit ~7 km/h) pour éviter la dérive à l'arrêt
+    if (state.isDriving && state.lastPoint && location.coords.accuracy < 30 && speed > 2) {
       const dist = getDistance(state.lastPoint.latitude, state.lastPoint.longitude, latitude, longitude);
+      // Sécurité supplémentaire : on ignore les sauts impossibles (> 500m entre deux points en 10s)
       if (dist < 500) {
         state.totalTripDistance += dist;
       }
@@ -80,8 +88,8 @@ TaskManager.defineTask(LOCATION_TRACKING_TASK, async ({ data, error }) => {
     state.lastPoint = { latitude, longitude };
 
     // DÉTECTION STATION SERVICE
-    // Si arrêté (< 1m/s) depuis plus de 2 minutes ET pas de check depuis 10 minutes
-    if (speed < 1 && (Date.now() - state.lastMoveTime > 120000) && (Date.now() - state.lastStationCheckTime > 600000)) {
+    // Si arrêté (< 1m/s) depuis plus de 2 minutes ET pas de check depuis 2 heures (7200000 ms)
+    if (speed < 1 && (Date.now() - state.lastMoveTime > 120000) && (Date.now() - state.lastStationCheckTime > 7200000)) {
       state.lastStationCheckTime = Date.now();
       try {
         const addr = await Location.reverseGeocodeAsync({ latitude, longitude });
