@@ -4,7 +4,7 @@ import { useVehicleStore } from '../store/useVehicleStore';
 import { colors, spacing, typography } from '../theme/colors';
 import { GlassCard } from '../components/common/GlassCard';
 import { MaintenanceGauge } from '../components/common/MaintenanceGauge';
-import { Car, Fuel, Shield, AlertTriangle, CheckCircle2 } from 'lucide-react-native';
+import { Car, Fuel, Shield, AlertTriangle, CheckCircle2, MapPin } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 import { getMaintenanceSchema } from '../utils/maintenanceSchema';
@@ -14,9 +14,12 @@ import { calculateBudgetForecast } from '../utils/mileageAnalytics';
 
 import * as Notifications from 'expo-notifications';
 import { MileageModal } from '../components/common/MileageModal';
+import { useTripStatus } from '../hooks/useTripStatus';
+import { NavigationProp } from '@react-navigation/native';
+import { RootStackParamList } from '../navigation/MainNavigator';
 
 export default function DashboardScreen() {
-  const navigation = useNavigation<any>();
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const profile = useVehicleStore((state) => state.profile);
   const expenses = useVehicleStore((state) => state.expenses);
   const trips = useVehicleStore((state) => state.trips);
@@ -24,6 +27,7 @@ export default function DashboardScreen() {
 
   const [mileageModalVisible, setMileageModalVisible] = React.useState(false);
   const [suggestedKms, setSuggestedKms] = React.useState(0);
+  const tripStatus = useTripStatus();
 
   React.useEffect(() => {
     // Écouteur pour les clics sur les notifications
@@ -130,6 +134,34 @@ export default function DashboardScreen() {
           />
         </View>
       </View>
+
+      {tripStatus.isDriving && (
+        <TouchableOpacity 
+          activeOpacity={0.9}
+          onPress={() => navigation.navigate('Stats')}
+          style={styles.activeTripBanner}
+        >
+          <LinearGradient
+            colors={[colors.primary, '#1a73e8']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={styles.activeTripGradient}
+          >
+            <View style={styles.activeTripContent}>
+              <View style={styles.activeTripLeft}>
+                <View style={styles.pulseContainer}>
+                  <View style={styles.pulseCircle} />
+                  <MapPin size={14} color="#FFF" />
+                </View>
+                <Text style={styles.activeTripText}>Trajet Auto-Log en cours...</Text>
+              </View>
+              <Text style={styles.activeTripDistance}>
+                {(tripStatus.totalTripDistance / 1000).toFixed(1)} km
+              </Text>
+            </View>
+          </LinearGradient>
+        </TouchableOpacity>
+      )}
 
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         <View style={styles.header}>
@@ -470,5 +502,57 @@ const styles = StyleSheet.create({
     color: colors.textMuted,
     textAlign: 'center',
     lineHeight: 14,
+  },
+  activeTripBanner: {
+    marginHorizontal: spacing.lg,
+    marginTop: spacing.sm,
+    borderRadius: 12,
+    overflow: 'hidden',
+    elevation: 4,
+    shadowColor: colors.primary,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+  },
+  activeTripGradient: {
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+  },
+  activeTripContent: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  activeTripLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  activeTripText: {
+    color: '#FFF',
+    fontSize: 13,
+    fontWeight: '700',
+  },
+  activeTripDistance: {
+    color: '#FFF',
+    fontSize: 16,
+    fontWeight: '900',
+  },
+  pulseContainer: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  pulseCircle: {
+    position: 'absolute',
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: 'rgba(255,255,255,0.4)',
+    transform: [{ scale: 1.2 }],
+    opacity: 0.5,
   },
 });
