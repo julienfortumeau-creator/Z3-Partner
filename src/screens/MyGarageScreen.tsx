@@ -12,7 +12,7 @@ import {
 import { useVehicleStore } from '../store/useVehicleStore';
 import { ChevronLeft, Home, MapPin, Phone, Mail, Building2 } from 'lucide-react-native';
 import { useNavigation } from '@react-navigation/native';
-import { APP_SHORT_NAME } from '../config/vehicleConfig';
+import { APP_SHORT_NAME } from '../config/vehicles';
 import { colors, spacing, typography } from '../theme/colors';
 import { InputField } from '../components/common/InputField';
 import { PremiumButton } from '../components/common/PremiumButton';

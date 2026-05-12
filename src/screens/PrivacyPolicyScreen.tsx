@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, SafeAreaView, ScrollView, TouchableOpacity } from 'react-native';
 import { colors, spacing, typography } from '../theme/colors';
-import { LEGAL_TEXTS } from '../config/vehicleConfig';
+import { LEGAL_TEXTS } from '../config/vehicles';
 import { GlassCard } from '../components/common/GlassCard';
 import { ChevronLeft } from 'lucide-react-native';
 import { useNavigation } from '@react-navigation/native';

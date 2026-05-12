@@ -19,7 +19,7 @@ import { InputField } from '../components/common/InputField';
 import { WearItem } from '../components/common/WearItem';
 import { 
   VEHICLE_MODELS, VEHICLE_YEARS, MAINTENANCE_ITEMS 
-} from '../config/vehicleConfig';
+} from '../config/vehicles';
 import { 
   ChevronLeft, Disc, Thermometer, Zap, Car, Calendar, Gauge, Euro, Shield,
   Activity, Wind, Fuel, Wrench, Layers, ArrowUpDown, ZapOff, Droplets, 

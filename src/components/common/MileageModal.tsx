@@ -16,7 +16,7 @@ import { colors, spacing, typography } from '../../theme/colors';
 import { GlassCard } from './GlassCard';
 import { Check, X, ArrowUpRight, Gauge } from 'lucide-react-native';
 import * as Haptics from 'expo-haptics';
-import { APP_SHORT_NAME } from '../../config/vehicleConfig';
+import { APP_SHORT_NAME } from '../../config/vehicles';
 
 interface MileageModalProps {
   visible: boolean;

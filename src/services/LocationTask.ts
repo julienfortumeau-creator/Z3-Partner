@@ -3,7 +3,7 @@ import * as Location from 'expo-location';
 import * as Notifications from 'expo-notifications';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import { LOCATION_TASK_NAME } from '../config/vehicleConfig';
+import { LOCATION_TASK_NAME, GPS_CONFIG } from '../config/vehicles';
 
 export const LOCATION_TRACKING_TASK = LOCATION_TASK_NAME;
 
@@ -58,11 +58,10 @@ TaskManager.defineTask(LOCATION_TRACKING_TASK, async ({ data, error }) => {
       lastStationCheckTime: 0,
     };
 
-    const GAS_STATION_KEYWORDS = ['Station', 'Total', 'Shell', 'Esso', 'BP', 'Avia', 'Eni', 'Relais', 'Garage', 'Carrefour', 'Leclerc', 'Intermarché', 'Super U', 'Auchan'];
+    const GAS_STATION_KEYWORDS = GPS_CONFIG.stationKeywords;
 
-    // DÉTECTION DE MOUVEMENT
-    // On ne considère le trajet comme commencé que si on bouge vraiment (> 15 km/h)
-    if (speed > 4.16) {
+    // On ne considère le trajet comme commencé que si on bouge vraiment (> threshold)
+    if (speed > GPS_CONFIG.speedThreshold) {
       if (!state.isDriving) {
         await addLog('Trajet commencé');
         state.isDriving = true;
@@ -87,9 +86,8 @@ TaskManager.defineTask(LOCATION_TRACKING_TASK, async ({ data, error }) => {
 
     state.lastPoint = { latitude, longitude };
 
-    // DÉTECTION STATION SERVICE
-    // Si arrêté (< 1m/s) depuis plus de 2 minutes ET pas de check depuis 2 heures (7200000 ms)
-    if (speed < 1 && (Date.now() - state.lastMoveTime > 120000) && (Date.now() - state.lastStationCheckTime > 7200000)) {
+    // Si arrêté (< threshold) depuis plus de 2 minutes ET pas de check depuis l'intervalle configuré
+    if (speed < GPS_CONFIG.stopThreshold && (Date.now() - state.lastMoveTime > 120000) && (Date.now() - state.lastStationCheckTime > GPS_CONFIG.stationCheckInterval) ) {
       state.lastStationCheckTime = Date.now();
       try {
         const addr = await Location.reverseGeocodeAsync({ latitude, longitude });
@@ -102,8 +100,8 @@ TaskManager.defineTask(LOCATION_TRACKING_TASK, async ({ data, error }) => {
             await addLog(`Station détectée: ${place.name}`);
             await Notifications.scheduleNotificationAsync({
               content: {
-                title: "Station service détectée ⛽",
-                body: `${place.name || 'Une station'} a été détectée. Ajouter un plein ?`,
+                title: GPS_CONFIG.notifications.stationTitle,
+                body: GPS_CONFIG.notifications.stationBody(place.name || ''),
                 data: { type: 'fuel_add' },
               },
               trigger: null,
@@ -115,16 +113,16 @@ TaskManager.defineTask(LOCATION_TRACKING_TASK, async ({ data, error }) => {
       }
     }
 
-    // Détection de fin de trajet (arrêt > 5 minutes)
-    if (state.isDriving && speed < 1 && (Date.now() - state.lastMoveTime > 300000)) {
+    // Détection de fin de trajet (arrêt prolongé)
+    if (state.isDriving && speed < GPS_CONFIG.stopThreshold && (Date.now() - state.lastMoveTime > GPS_CONFIG.stopDuration)) {
        const kms = Math.round(state.totalTripDistance / 1000);
        await addLog(`Fin de trajet: ${kms} km détectés`);
        
        if (kms >= 1) {
          await Notifications.scheduleNotificationAsync({
            content: {
-             title: "Trajet terminé 🚘",
-             body: `Vous avez parcouru ${kms} km. Mettre à jour votre compteur ?`,
+             title: GPS_CONFIG.notifications.tripEndTitle,
+             body: GPS_CONFIG.notifications.tripEndBody(kms),
              data: { type: 'mileage_update', suggestedKms: kms },
            },
            trigger: null,

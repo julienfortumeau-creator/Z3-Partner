@@ -15,7 +15,7 @@ import { PremiumButton } from '../components/common/PremiumButton';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ChevronLeft, Mail, ExternalLink, HelpCircle, Heart, Send } from 'lucide-react-native';
 import { useNavigation } from '@react-navigation/native';
-import { APP_NAME, APP_VERSION, APP_SHORT_NAME, COMMUNITY_LINKS } from '../config/vehicleConfig';
+import { APP_NAME, APP_VERSION, APP_SHORT_NAME, COMMUNITY_LINKS } from '../config/vehicles';
 
 export default function SupportScreen() {
   const navigation = useNavigation();

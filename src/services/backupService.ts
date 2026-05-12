@@ -4,7 +4,7 @@ import * as DocumentPicker from 'expo-document-picker';
 import { useVehicleStore } from '../store/useVehicleStore';
 import { Alert } from 'react-native';
 
-import { BACKUP_FILENAME, APP_NAME } from '../config/vehicleConfig';
+import { BACKUP_FILENAME, APP_NAME, BACKUP_TEXTS } from '../config/vehicles';
 
 /**
  * Exporte l'intégralité des données de l'application vers un fichier JSON.
@@ -34,7 +34,7 @@ export const exportData = async () => {
     });
   } catch (error) {
     console.error('Export error:', error);
-    Alert.alert('Erreur', 'Impossible d\'exporter les données.');
+    Alert.alert('Erreur', BACKUP_TEXTS.exportError);
   }
 };
 
@@ -56,12 +56,12 @@ export const importData = async () => {
 
     // Validation basique du schéma
     if (!data.profile || !Array.isArray(data.expenses)) {
-      throw new Error('Format de fichier invalide');
+      throw new Error(BACKUP_TEXTS.importInvalidFormat);
     }
 
     Alert.alert(
-      'Restaurer la sauvegarde ?',
-      'Cette action remplacera toutes vos données actuelles par celles du fichier de sauvegarde. Voulez-vous continuer ?',
+      BACKUP_TEXTS.importConfirmTitle,
+      BACKUP_TEXTS.importConfirmBody,
       [
         { text: 'Annuler', style: 'cancel' },
         { 
@@ -69,13 +69,13 @@ export const importData = async () => {
           style: 'destructive',
           onPress: () => {
             useVehicleStore.getState().restoreState(data);
-            Alert.alert('Succès', 'Votre historique a été restauré avec succès.');
+            Alert.alert('Succès', BACKUP_TEXTS.importSuccess);
           }
         }
       ]
     );
   } catch (error) {
     console.error('Import error:', error);
-    Alert.alert('Erreur', 'Le fichier de sauvegarde est corrompu ou invalide.');
+    Alert.alert('Erreur', BACKUP_TEXTS.importError);
   }
 };

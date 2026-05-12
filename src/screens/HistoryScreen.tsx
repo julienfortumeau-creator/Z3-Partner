@@ -15,7 +15,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Wrench, Fuel, Sparkles, Plus, MoreHorizontal, Clock, ArrowRight } from 'lucide-react-native';
 import { getMaintenanceSchema } from '../utils/maintenanceSchema';
 import { calculateGlobalDailyAverage } from '../utils/mileageAnalytics';
-import { APP_SHORT_NAME } from '../config/vehicleConfig';
+import { APP_SHORT_NAME } from '../config/vehicles';
 
 type TimelineItem = {
   id: string;

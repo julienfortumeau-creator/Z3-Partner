@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, SafeAreaView, ScrollView, Switch, TouchableOpac
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useVehicleStore } from '../store/useVehicleStore';
 import { colors, spacing, typography } from '../theme/colors';
-import { APP_NAME, APP_VERSION, APP_TAGLINE } from '../config/vehicleConfig';
+import { APP_NAME, APP_VERSION, APP_TAGLINE, UI_TEXTS } from '../config/vehicles';
 import { GlassCard } from '../components/common/GlassCard';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MapPin, Bell, LogOut, ChevronRight, User, ShieldCheck, Mail, Building2, FileText, Download, Share2, Heart, BookOpen } from 'lucide-react-native';
@@ -32,7 +32,7 @@ export default function SettingsScreen() {
       setIsExporting(true);
       await generateMaintenancePDF(profile, expenses);
     } catch (error) {
-      Alert.alert("Erreur", "Impossible de générer le document PDF.");
+      Alert.alert(UI_TEXTS.errorTitle, UI_TEXTS.pdfError);
     } finally {
       setIsExporting(false);
     }
@@ -40,11 +40,11 @@ export default function SettingsScreen() {
 
   const handleLogout = () => {
     Alert.alert(
-      "Déconnexion",
-      "Voulez-vous vraiment vous déconnecter ? Les données locales seront conservées.",
+      UI_TEXTS.logoutTitle,
+      UI_TEXTS.logoutConfirm,
       [
-        { text: "Annuler", style: "cancel" },
-        { text: "Déconnexion", style: "destructive", onPress: () => navigation.replace('Onboarding') }
+        { text: UI_TEXTS.cancel, style: "cancel" },
+        { text: UI_TEXTS.logoutTitle, style: "destructive", onPress: () => navigation.replace('Onboarding') }
       ]
     );
   };
@@ -54,12 +54,12 @@ export default function SettingsScreen() {
       const logsStr = await AsyncStorage.getItem('@gps_logs');
       const logs = logsStr ? JSON.parse(logsStr) : [];
       if (logs.length === 0) {
-        Alert.alert("GPS Logs", "Aucun log enregistré pour le moment.");
+        Alert.alert(UI_TEXTS.gpsLogsTitle, UI_TEXTS.noLogs);
       } else {
-        Alert.alert("GPS Logs (50 derniers)", logs.join('\n'));
+        Alert.alert(UI_TEXTS.lastLogs, logs.join('\n'));
       }
     } catch (e) {
-      Alert.alert("Erreur", "Impossible de lire les logs.");
+      Alert.alert(UI_TEXTS.errorTitle, UI_TEXTS.logsError);
     }
   };
 
@@ -68,12 +68,12 @@ export default function SettingsScreen() {
       // User is disabling
       setGPSEnabled(false);
       Alert.alert(
-        "Auto-Log Désactivé",
-        "Le suivi automatique est maintenant désactivé dans l'application. Pour une confidentialité totale, vous pouvez également révoquer l'accès à la position dans les réglages de votre iPhone.",
+        UI_TEXTS.gpsDisabledTitle,
+        UI_TEXTS.gpsDisabledBody,
         [
           { text: "OK", style: "default" },
           { 
-            text: "Réglages iPhone", 
+            text: UI_TEXTS.iphoneSettings, 
             onPress: () => Linking.openSettings() 
           }
         ]

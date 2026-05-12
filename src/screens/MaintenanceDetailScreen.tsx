@@ -14,7 +14,7 @@ import { colors, spacing, typography } from '../theme/colors';
 import { ChevronLeft, Phone, AlertTriangle, CheckCircle2, Info, Wrench, RefreshCcw } from 'lucide-react-native';
 import { useNavigation } from '@react-navigation/native';
 import { getMaintenanceSchema, getEngineType } from '../utils/maintenanceSchema';
-import { ENGINE_TYPE_LABELS, LEGAL_TEXTS } from '../config/vehicleConfig';
+import { ENGINE_TYPE_LABELS, LEGAL_TEXTS } from '../config/vehicles';
 import { LinearGradient } from 'expo-linear-gradient';
 
 export default function MaintenanceDetailScreen() {

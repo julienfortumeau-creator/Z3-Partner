@@ -8,7 +8,7 @@ import { Car, Fuel, Shield, AlertTriangle, CheckCircle2, MapPin } from 'lucide-r
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 import { getMaintenanceSchema } from '../utils/maintenanceSchema';
-import { APP_NAME, APP_SHORT_NAME, VEHICLE_PROFILE_IMAGE, LEGAL_TEXTS } from '../config/vehicleConfig';
+import { APP_NAME, APP_SHORT_NAME, VEHICLE_PROFILE_IMAGE, LEGAL_TEXTS, UI_TEXTS } from '../config/vehicles';
 import { calculateAverageConsumption } from '../utils/fuelAnalytics';
 import { calculateBudgetForecast } from '../utils/mileageAnalytics';
 
@@ -153,7 +153,7 @@ export default function DashboardScreen() {
                   <View style={styles.pulseCircle} />
                   <MapPin size={14} color="#FFF" />
                 </View>
-                <Text style={styles.activeTripText}>Trajet Auto-Log en cours...</Text>
+                <Text style={styles.activeTripText}>{UI_TEXTS.activeTripBanner}</Text>
               </View>
               <Text style={styles.activeTripDistance}>
                 {(tripStatus.totalTripDistance / 1000).toFixed(1)} km
@@ -166,13 +166,13 @@ export default function DashboardScreen() {
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         <View style={styles.header}>
           <View>
-            <Text style={styles.greeting}>Bonjour, Passionné</Text>
+            <Text style={styles.greeting}>{UI_TEXTS.greeting}</Text>
             <Text style={styles.modelName}>{profile.model} {profile.year}</Text>
           </View>
           <View style={[styles.statusBadge, { backgroundColor: isHealthy ? colors.success + '20' : colors.warning + '20' }]}>
             {isHealthy ? <CheckCircle2 size={16} color={colors.success} /> : <AlertTriangle size={16} color={colors.warning} />}
             <Text style={[styles.statusText, { color: isHealthy ? colors.success : colors.warning }]}>
-              {isHealthy ? 'Optimal' : 'Entretien'}
+              {isHealthy ? UI_TEXTS.optimalStatus : UI_TEXTS.maintenanceStatus}
             </Text>
           </View>
         </View>
@@ -185,7 +185,7 @@ export default function DashboardScreen() {
           >
             <Text style={styles.mileageLabel}>Kilométrage Actuel</Text>
             <Text style={styles.mileageValue}>{currentMileage.toLocaleString()} km</Text>
-            <Text style={styles.mileageAction}>Mettre à jour {'>'}</Text>
+            <Text style={styles.mileageAction}>{UI_TEXTS.updateMileage} {'>'}</Text>
           </TouchableOpacity>
 
           <View style={styles.divider} />

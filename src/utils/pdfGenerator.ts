@@ -1,7 +1,7 @@
 import * as Print from 'expo-print';
 import * as Sharing from 'expo-sharing';
 import { VehicleProfile, Expense } from '../store/useVehicleStore';
-import { APP_NAME, BRAND_COLORS, LEGAL_TEXTS } from '../config/vehicleConfig';
+import { APP_NAME, BRAND_COLORS, LEGAL_TEXTS } from '../config/vehicles';
 
 /**
  * Génère un PDF professionnel de l'historique complet du véhicule.

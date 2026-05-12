@@ -21,7 +21,7 @@ import { WearItem } from '../components/common/WearItem';
 import { 
   APP_NAME, APP_SHORT_NAME, VEHICLE_MODELS, VEHICLE_YEARS, 
   HEALTH_STEPS_CONFIG, MAINTENANCE_ITEMS, LEGAL_TEXTS
-} from '../config/vehicleConfig';
+} from '../config/vehicles';
 import { 
   Car, Calendar, Gauge, Euro, Shield, Disc, Thermometer, Zap, 
   ChevronLeft, Activity, Wind, Fuel, Wrench, Layers, 
@@ -65,7 +65,7 @@ const getIcon = (name: string) => {
 
 import { HelpCircle } from 'lucide-react-native';
 
-// Les étapes de santé sont maintenant pilotées par HEALTH_STEPS_CONFIG dans vehicleConfig.ts
+// Les étapes de santé sont maintenant pilotées par HEALTH_STEPS_CONFIG dans la configuration véhicule
 
 export default function OnboardingScreen() {
   const navigation = useNavigation<any>();

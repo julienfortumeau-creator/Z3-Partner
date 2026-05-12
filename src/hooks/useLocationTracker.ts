@@ -5,7 +5,7 @@ import * as Notifications from 'expo-notifications';
 import { LOCATION_TRACKING_TASK } from '../services/LocationTask';
 
 import { useVehicleStore } from '../store/useVehicleStore';
-import { APP_NAME, BRAND_COLORS } from '../config/vehicleConfig';
+import { APP_NAME, BRAND_COLORS } from '../config/vehicles';
 
 export const useLocationTracker = () => {
   const gpsEnabled = useVehicleStore((state) => state.gpsEnabled);

@@ -1,6 +1,6 @@
 /**
  * Ce fichier est maintenant un wrapper léger autour de vehicleConfig.
- * Toute la configuration est dans src/config/vehicleConfig.ts
+ * Toute la configuration est dans src/config/vehicles/
  */
 import {
   EngineType,
@@ -8,7 +8,7 @@ import {
   MAINTENANCE_ITEMS,
   MAINTENANCE_SCHEMA,
   detectEngineType,
-} from '../config/vehicleConfig';
+} from '../config/vehicles';
 
 export type { EngineType };
 
