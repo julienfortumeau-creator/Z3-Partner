@@ -8,7 +8,7 @@ export const z3Config: VehicleConfig = {
   BACKUP_FILENAME: 'z3_copilot_backup.json',
   LOCATION_TASK_NAME: 'Z3_COPILOT_LOCATION_TRACKING',
   
-  VEHICLE_PROFILE_IMAGE: require('../../../assets/z3_profile.png'),
+  VEHICLE_PROFILE_IMAGE: require('../../../assets/vehicles/z3/profile.png'),
   
   ASSETS: {
     icon: './assets/vehicles/z3/icon.png',

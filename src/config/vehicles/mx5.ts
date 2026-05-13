@@ -9,7 +9,7 @@ export const mx5Config: VehicleConfig = {
   LOCATION_TASK_NAME: 'MX5_COPILOT_LOCATION_TRACKING',
   
   // Note: Il faudra ajouter l'image mx5_profile.png dans les assets
-  VEHICLE_PROFILE_IMAGE: require('../../../assets/z3_profile.png'), 
+  VEHICLE_PROFILE_IMAGE: require('../../../assets/vehicles/mx5/profile.png'), 
   
   ASSETS: {
     icon: './assets/vehicles/mx5/icon.png',

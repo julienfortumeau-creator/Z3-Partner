@@ -9,7 +9,7 @@ export const z4Config: VehicleConfig = {
   LOCATION_TASK_NAME: 'Z4_COPILOT_LOCATION_TRACKING',
   
   // Note: Il faudra ajouter l'image z4_profile.png dans les assets
-  VEHICLE_PROFILE_IMAGE: require('../../../assets/z3_profile.png'), 
+  VEHICLE_PROFILE_IMAGE: require('../../../assets/vehicles/z4/profile.png'), 
   
   ASSETS: {
     icon: './assets/vehicles/z4/icon.png',
