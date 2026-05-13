@@ -11,6 +11,13 @@ export const z4Config: VehicleConfig = {
   // Note: Il faudra ajouter l'image z4_profile.png dans les assets
   VEHICLE_PROFILE_IMAGE: require('../../../assets/z3_profile.png'), 
   
+  ASSETS: {
+    icon: './assets/vehicles/z4/icon.png',
+    splash: './assets/vehicles/z4/splash.png',
+    adaptiveIcon: './assets/vehicles/z4/adaptive-icon.png',
+    favicon: './assets/vehicles/z4/favicon.png',
+  },
+
   BRAND_COLORS: {
     primary: '#003366',      // BMW Deep Blue
     primaryDark: '#001A33',

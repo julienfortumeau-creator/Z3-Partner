@@ -10,6 +10,13 @@ export const z3Config: VehicleConfig = {
   
   VEHICLE_PROFILE_IMAGE: require('../../../assets/z3_profile.png'),
   
+  ASSETS: {
+    icon: './assets/vehicles/z3/icon.png',
+    splash: './assets/vehicles/z3/splash.png',
+    adaptiveIcon: './assets/vehicles/z3/adaptive-icon.png',
+    favicon: './assets/vehicles/z3/favicon.png',
+  },
+  
   BRAND_COLORS: {
     primary: '#0066B2',      // BMW Blue
     primaryDark: '#003366',

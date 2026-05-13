@@ -11,6 +11,13 @@ export const mx5Config: VehicleConfig = {
   // Note: Il faudra ajouter l'image mx5_profile.png dans les assets
   VEHICLE_PROFILE_IMAGE: require('../../../assets/z3_profile.png'), 
   
+  ASSETS: {
+    icon: './assets/vehicles/mx5/icon.png',
+    splash: './assets/vehicles/mx5/splash.png',
+    adaptiveIcon: './assets/vehicles/mx5/adaptive-icon.png',
+    favicon: './assets/vehicles/mx5/favicon.png',
+  },
+
   BRAND_COLORS: {
     primary: '#D01C1F',      // Mazda Classic Red
     primaryDark: '#8B1214',

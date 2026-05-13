@@ -14,7 +14,7 @@ import {
  * À terme, cela pourra être piloté par une variable d'environnement (EXPO_PUBLIC_VEHICLE_TYPE)
  * ou par une sélection dans l'application.
  */
-const VEHICLE_VARIANT: 'z3' | 'mx5' | 'z4' = 'z3'; // <--- Changez ici pour tester la MX-5 ou la Z4
+const VEHICLE_VARIANT = (process.env.EXPO_PUBLIC_VEHICLE_VARIANT || 'z3') as 'z3' | 'mx5' | 'z4';
 
 export const vehicleConfig = 
   VEHICLE_VARIANT === 'mx5' ? mx5Config : 

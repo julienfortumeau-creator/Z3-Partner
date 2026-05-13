@@ -33,6 +33,12 @@ export interface VehicleConfig {
   BACKUP_FILENAME: string;
   LOCATION_TASK_NAME: string;
   VEHICLE_PROFILE_IMAGE: any;
+  ASSETS: {
+    icon: string;
+    splash: string;
+    adaptiveIcon: string;
+    favicon: string;
+  };
   BRAND_COLORS: {
     primary: string;
     primaryDark: string;
