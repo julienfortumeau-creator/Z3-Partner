@@ -16,7 +16,7 @@ const baseConfig = {
       NSCameraUsageDescription: "Cette application nécessite l'accès à l'appareil photo pour scanner vos factures d'entretien.",
       NSLocationWhenInUseUsageDescription: "L'application utilise le GPS pour suivre vos trajets et recommander l'ajout de kilométrage.",
       NSLocationAlwaysAndWhenInUseUsageDescription: "L'application utilise le GPS en arrière-plan pour détecter automatiquement vos trajets et calculer la distance parcourue.",
-      ITSAppUsesNonExemptEncryption": false,
+      "ITSAppUsesNonExemptEncryption": false,
     }
   },
   android: {
