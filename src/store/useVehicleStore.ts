@@ -33,6 +33,7 @@ export interface VehicleProfile {
   initialWearKm: Record<string, number>;
   profileLastSavedMileage?: number;
   garage?: GarageInfo;
+  customMaintenanceIntervals?: Record<string, { km?: number; years?: number }>;
 }
 
 export interface Trip {

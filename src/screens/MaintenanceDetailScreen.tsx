@@ -25,7 +25,7 @@ export default function MaintenanceDetailScreen() {
   if (!profile) return null;
 
   const currentMileage = profile.mileage;
-  const SCHEMA = getMaintenanceSchema(profile.model);
+  const SCHEMA = getMaintenanceSchema(profile.model, profile.customMaintenanceIntervals);
   const engineType = getEngineType(profile.model);
 
   // Base commune : km parcourus depuis la dernière sauvegarde du profil

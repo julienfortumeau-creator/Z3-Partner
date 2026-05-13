@@ -58,7 +58,7 @@ export default function DashboardScreen() {
   const drivenSinceSave = Math.max(0, currentMileage - baseMileage);
 
   // Calcul de la jauge Oil Service (Indépendante)
-  const schema = getMaintenanceSchema(profile.model);
+  const schema = getMaintenanceSchema(profile.model, profile.customMaintenanceIntervals);
   const oilSchema = schema.find(m => m.id === 'oil')!;
   const initialOilWear = profile.initialWearKm?.['oil'] || 0;
   const oilProgress = initialOilWear + drivenSinceSave;

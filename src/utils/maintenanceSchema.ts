@@ -23,15 +23,18 @@ export const getEngineType = detectEngineType;
 
 export const MAINTENANCE_BASE = MAINTENANCE_ITEMS;
 
-export const getMaintenanceSchema = (model: string): DetailedMaintenanceItem[] => {
+export const getMaintenanceSchema = (model: string, customIntervals?: Record<string, { km?: number; years?: number }>): DetailedMaintenanceItem[] => {
   const engineType = detectEngineType(model);
   const data = MAINTENANCE_SCHEMA[engineType];
   
-  return MAINTENANCE_ITEMS.map(base => ({
-    ...base,
-    intervalKm: data[base.id]?.km,
-    intervalYears: data[base.id]?.years,
-    detail: data[base.id]?.detail || '',
-    estimatedCost: data[base.id]?.cost || 'Sur devis',
-  }));
+  return MAINTENANCE_ITEMS.map(base => {
+    const custom = customIntervals?.[base.id];
+    return {
+      ...base,
+      intervalKm: custom?.km ?? data[base.id]?.km,
+      intervalYears: custom?.years ?? data[base.id]?.years,
+      detail: data[base.id]?.detail || '',
+      estimatedCost: data[base.id]?.cost || 'Sur devis',
+    };
+  });
 };

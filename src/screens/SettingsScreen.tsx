@@ -192,6 +192,12 @@ export default function SettingsScreen() {
           />
           <View style={styles.divider} />
           <MenuLink 
+            label="Réglages expert" 
+            icon={Settings} 
+            onPress={() => navigation.navigate('ExpertSettings' as any)}
+          />
+          <View style={styles.divider} />
+          <MenuLink 
             label={isExporting ? "Génération en cours..." : "Exporter l'historique (PDF)"} 
             icon={FileText} 
             onPress={handleExportPDF}

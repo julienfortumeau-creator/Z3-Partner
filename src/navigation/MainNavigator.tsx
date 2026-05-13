@@ -18,6 +18,7 @@ import MaintenanceDetailScreen from '../screens/MaintenanceDetailScreen';
 import MyGarageScreen from '../screens/MyGarageScreen';
 import PrivacyPolicyScreen from '../screens/PrivacyPolicyScreen';
 import LegalNoticeScreen from '../screens/LegalNoticeScreen';
+import ExpertSettingsScreen from '../screens/ExpertSettingsScreen';
 import { colors } from '../theme/colors';
 import { useVehicleStore } from '../store/useVehicleStore';
 
@@ -32,6 +33,7 @@ export type RootStackParamList = {
   MyGarage: undefined;
   PrivacyPolicy: undefined;
   LegalNotice: undefined;
+  ExpertSettings: undefined;
 };
 
 export type TabParamList = {
@@ -149,6 +151,7 @@ export default function MainNavigator() {
       <Stack.Screen name="MyGarage" component={MyGarageScreen} />
       <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicyScreen} />
       <Stack.Screen name="LegalNotice" component={LegalNoticeScreen} />
+      <Stack.Screen name="ExpertSettings" component={ExpertSettingsScreen} />
     </Stack.Navigator>
   );
 }

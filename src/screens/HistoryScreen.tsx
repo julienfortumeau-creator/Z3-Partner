@@ -64,7 +64,7 @@ export default function HistoryScreen() {
 
     // 3. Ajouter le futur
     const dailyAvg = calculateGlobalDailyAverage(trips, profile);
-    const schema = getMaintenanceSchema(profile.model);
+    const schema = getMaintenanceSchema(profile.model, profile.customMaintenanceIntervals);
     const currentMileage = profile.mileage;
     
     schema.forEach(item => {

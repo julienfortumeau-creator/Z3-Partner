@@ -64,6 +64,10 @@ export default function EditProfileScreen() {
     acquisitionDate: profile.acquisitionDate,
   });
 
+    });
+    return state;
+  });
+
   const [mileage, setMileage] = useState(profile.acquisitionMileage.toString());
 
   const [wear, setWear] = useState<Record<string, { isNew: boolean, km: string }>>(() => {
@@ -182,7 +186,7 @@ export default function EditProfileScreen() {
                 style={styles.button}
               />
             </>
-          ) : (
+          ) : step === 2 ? (
             <>
               <Text style={styles.sectionInfo}>
                 Mettez à jour l'usure de vos consommables pour ajuster les alertes d'entretien.
@@ -203,7 +207,7 @@ export default function EditProfileScreen() {
                 ))}
               </GlassCard>
 
-              <View style={styles.buttonRow}>
+               <View style={styles.buttonRow}>
                 <TouchableOpacity style={styles.backButtonRow} onPress={handleBack}>
                   <ChevronLeft color={colors.textSecondary} size={24} />
                   <Text style={styles.backText}>Retour</Text>
