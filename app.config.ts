@@ -6,7 +6,7 @@ console.log(`\n🚗 Building for variant: [${VEHICLE_VARIANT}]\n`);
 
 // Configuration de base partagée
 const baseConfig = {
-  version: "1.1.1",
+  version: "1.1.2",
   orientation: "portrait",
   userInterfaceStyle: "dark",
   ios: {
