@@ -8,13 +8,13 @@ console.log(`\n🚗 Building for variant: [${VEHICLE_VARIANT}]\n`);
 const baseConfig = {
   name: "Z3 Copilot",
   slug: "z3-copilot",
-  version: "1.1.3",
+  version: "1.1.4",
   orientation: "portrait" as const,
   userInterfaceStyle: "dark" as const,
   ios: {
     supportsTablet: true,
     bundleIdentifier: "com.ftmx.z3copilot",
-    buildNumber: "10",
+    buildNumber: "11",
     infoPlist: {
       UIBackgroundModes: ["location", "fetch"],
       NSCameraUsageDescription: "Cette application nécessite l'accès à l'appareil photo pour scanner vos factures d'entretien.",
@@ -41,7 +41,7 @@ const baseConfig = {
   },
   android: {
     package: "com.ftmx.z3copilot",
-    versionCode: 10,
+    versionCode: 11,
     permissions: [
       "android.permission.ACCESS_COARSE_LOCATION",
       "android.permission.ACCESS_FINE_LOCATION",
