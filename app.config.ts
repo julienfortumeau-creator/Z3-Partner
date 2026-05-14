@@ -1,6 +1,8 @@
 import { ExpoConfig, ConfigContext } from 'expo/config';
 
-const VEHICLE_VARIANT = process.env.EXPO_PUBLIC_VEHICLE_VARIANT || 'z3';
+const VEHICLE_VARIANT = (process.env.EXPO_PUBLIC_VEHICLE_VARIANT || 'z3').trim();
+
+console.log(`\n🚗 Building for variant: [${VEHICLE_VARIANT}]\n`);
 
 // Configuration de base partagée
 const baseConfig = {
@@ -72,7 +74,7 @@ const variantConfigs: Record<string, any> = {
   },
   mx5: {
     name: "MX-5 Copilot",
-    slug: "mx5-copilot",
+    slug: "z3-copilot",
     icon: "./assets/vehicles/mx5/icon.png",
     splash: {
       image: "./assets/vehicles/mx5/splash.png",
@@ -91,7 +93,7 @@ const variantConfigs: Record<string, any> = {
   },
   z4: {
     name: "Z4 Copilot",
-    slug: "z4-copilot",
+    slug: "z3-copilot",
     icon: "./assets/vehicles/z4/icon.png",
     splash: {
       image: "./assets/vehicles/z4/splash.png",
