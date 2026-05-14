@@ -4,13 +4,13 @@ const VEHICLE_VARIANT = process.env.EXPO_PUBLIC_VEHICLE_VARIANT || 'z3';
 
 // Configuration de base partagée
 const baseConfig = {
-  version: "1.10",
+  version: "1.1.1",
   orientation: "portrait",
   userInterfaceStyle: "dark",
   ios: {
     supportsTablet: true,
     bundleIdentifier: "com.ftmx.z3copilot",
-    buildNumber: "8",
+    buildNumber: "9",
     infoPlist: {
       UIBackgroundModes: ["location", "fetch"],
       NSCameraUsageDescription: "Cette application nécessite l'accès à l'appareil photo pour scanner vos factures d'entretien.",
@@ -21,7 +21,7 @@ const baseConfig = {
   },
   android: {
     package: "com.ftmx.z3copilot",
-    versionCode: 8,
+    versionCode: 9,
     permissions: [
       "android.permission.ACCESS_COARSE_LOCATION",
       "android.permission.ACCESS_FINE_LOCATION",
@@ -61,9 +61,13 @@ const variantConfigs: Record<string, any> = {
       backgroundColor: "#121212"
     },
     android: {
+      package: "com.ftmx.z3copilot",
       adaptiveIcon: {
         foregroundImage: "./assets/vehicles/z3/adaptive-icon.png"
       }
+    },
+    ios: {
+      bundleIdentifier: "com.ftmx.z3copilot"
     }
   },
   mx5: {
@@ -76,9 +80,13 @@ const variantConfigs: Record<string, any> = {
       backgroundColor: "#121212"
     },
     android: {
+      package: "com.ftmx.mx5copilot",
       adaptiveIcon: {
         foregroundImage: "./assets/vehicles/mx5/adaptive-icon.png"
       }
+    },
+    ios: {
+      bundleIdentifier: "com.ftmx.mx5copilot"
     }
   },
   z4: {
@@ -91,9 +99,13 @@ const variantConfigs: Record<string, any> = {
       backgroundColor: "#121212"
     },
     android: {
+      package: "com.ftmx.z4copilot",
       adaptiveIcon: {
         foregroundImage: "./assets/vehicles/z4/adaptive-icon.png"
       }
+    },
+    ios: {
+      bundleIdentifier: "com.ftmx.z4copilot"
     }
   }
 };

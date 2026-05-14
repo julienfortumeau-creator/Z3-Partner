@@ -3,7 +3,7 @@ import { VehicleConfig } from './types';
 export const mx5Config: VehicleConfig = {
   APP_NAME: 'MX-5 Copilot',
   APP_SHORT_NAME: 'MX-5',
-  APP_VERSION: '1.10',
+  APP_VERSION: '1.1.1',
   APP_TAGLINE: 'Passionné Mazda MX-5',
   BACKUP_FILENAME: 'mx5_copilot_backup.json',
   LOCATION_TASK_NAME: 'MX5_COPILOT_LOCATION_TRACKING',
