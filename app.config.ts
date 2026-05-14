@@ -1,15 +1,10 @@
 import { ExpoConfig, ConfigContext } from 'expo/config';
 
-// On récupère la variante, et on s'assure qu'elle est définie
+// On récupère la variante
 const VEHICLE_VARIANT = (process.env.EXPO_PUBLIC_VEHICLE_VARIANT || '').trim().toLowerCase();
 
-if (!VEHICLE_VARIANT) {
-  console.error("\n❌ ERROR: EXPO_PUBLIC_VEHICLE_VARIANT is not set!");
-  console.error("Please set it before building (e.g. set EXPO_PUBLIC_VEHICLE_VARIANT=z4)\n");
-  // En local on peut fallback pour le dev, mais en build on veut de la rigueur
-  if (process.env.EAS_BUILD) {
-    throw new Error("EXPO_PUBLIC_VEHICLE_VARIANT must be set for EAS builds");
-  }
+if (!VEHICLE_VARIANT && process.env.EAS_BUILD) {
+  throw new Error("EXPO_PUBLIC_VEHICLE_VARIANT must be set for EAS builds");
 }
 
 const activeVariant = VEHICLE_VARIANT || 'z3';
@@ -47,8 +42,8 @@ const v = variantConfigs[activeVariant];
 export default ({ config }: ConfigContext): ExpoConfig => {
   return {
     ...config,
-    name: v.displayName, 
-    slug: "z3-copilot",
+    name: v.displayName,
+    slug: "z3-copilot", // On garde le même slug pour rester dans le même projet Expo/GitHub
     version: "1.1.8",
     orientation: "portrait",
     userInterfaceStyle: "dark",
