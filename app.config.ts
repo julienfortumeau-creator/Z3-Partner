@@ -1,10 +1,20 @@
 import { ExpoConfig, ConfigContext } from 'expo/config';
 
-const VEHICLE_VARIANT = (process.env.EXPO_PUBLIC_VEHICLE_VARIANT || 'z3').trim();
+// On récupère la variante, et on s'assure qu'elle est définie
+const VEHICLE_VARIANT = (process.env.EXPO_PUBLIC_VEHICLE_VARIANT || '').trim().toLowerCase();
 
-console.log(`\n🚗 Building for variant: [${VEHICLE_VARIANT}]\n`);
+if (!VEHICLE_VARIANT) {
+  console.error("\n❌ ERROR: EXPO_PUBLIC_VEHICLE_VARIANT is not set!");
+  console.error("Please set it before building (e.g. set EXPO_PUBLIC_VEHICLE_VARIANT=z4)\n");
+  // En local on peut fallback pour le dev, mais en build on veut de la rigueur
+  if (process.env.EAS_BUILD) {
+    throw new Error("EXPO_PUBLIC_VEHICLE_VARIANT must be set for EAS builds");
+  }
+}
 
-// Configuration spécifique par variante
+const activeVariant = VEHICLE_VARIANT || 'z3';
+console.log(`\n🚗 Building for variant: [${activeVariant}]\n`);
+
 const variantConfigs: Record<string, any> = {
   z3: {
     bundleIdentifier: "com.ftmx.z3copilot",
@@ -32,14 +42,14 @@ const variantConfigs: Record<string, any> = {
   }
 };
 
-const v = variantConfigs[VEHICLE_VARIANT] || variantConfigs.z3;
+const v = variantConfigs[activeVariant];
 
 export default ({ config }: ConfigContext): ExpoConfig => {
   return {
     ...config,
-    name: "Z3 Copilot", // Nom technique constant pour le target Xcode
+    name: "Z3 Copilot", 
     slug: "z3-copilot",
-    version: "1.1.5",
+    version: "1.1.6",
     orientation: "portrait",
     userInterfaceStyle: "dark",
     icon: v.icon,
@@ -51,7 +61,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     ios: {
       supportsTablet: true,
       bundleIdentifier: v.bundleIdentifier,
-      buildNumber: "12",
+      buildNumber: "13",
       infoPlist: {
         CFBundleDisplayName: v.displayName,
         UIBackgroundModes: ["location", "fetch"],
@@ -79,7 +89,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     },
     android: {
       package: v.packageName,
-      versionCode: 12,
+      versionCode: 13,
       permissions: [
         "android.permission.ACCESS_COARSE_LOCATION",
         "android.permission.ACCESS_FINE_LOCATION",
