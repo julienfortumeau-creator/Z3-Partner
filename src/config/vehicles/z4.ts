@@ -3,7 +3,7 @@ import { VehicleConfig } from './types';
 export const z4Config: VehicleConfig = {
   APP_NAME: 'Z4 Copilot',
   APP_SHORT_NAME: 'Z4',
-  APP_VERSION: '1.1.7',
+  APP_VERSION: '1.1.8',
   APP_TAGLINE: 'Passionné BMW Z4',
   BACKUP_FILENAME: 'z4_copilot_backup.json',
   LOCATION_TASK_NAME: 'Z4_COPILOT_LOCATION_TRACKING',
