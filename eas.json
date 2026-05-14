@@ -65,6 +65,9 @@
     }
   },
   "submit": {
-    "production": {}
+    "production": {},
+    "production-z3": {},
+    "production-z4": {},
+    "production-mx5": {}
   }
 }
