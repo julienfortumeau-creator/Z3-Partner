@@ -44,7 +44,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     ...config,
     name: v.displayName,
     slug: "z3-copilot", // On garde le même slug pour rester dans le même projet Expo/GitHub
-    version: "1.1.8",
+    version: "1.1.9",
     orientation: "portrait",
     userInterfaceStyle: "dark",
     icon: v.icon,
@@ -56,7 +56,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     ios: {
       supportsTablet: true,
       bundleIdentifier: v.bundleIdentifier,
-      buildNumber: "15",
+      buildNumber: "16",
       infoPlist: {
         CFBundleDisplayName: v.displayName,
         UIBackgroundModes: ["location", "fetch"],
@@ -84,7 +84,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     },
     android: {
       package: v.packageName,
-      versionCode: 15,
+      versionCode: 16,
       permissions: [
         "android.permission.ACCESS_COARSE_LOCATION",
         "android.permission.ACCESS_FINE_LOCATION",

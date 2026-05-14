@@ -3,20 +3,20 @@ import { VehicleConfig } from './types';
 export const z3Config: VehicleConfig = {
   APP_NAME: 'Z3 Copilot',
   APP_SHORT_NAME: 'Z3',
-  APP_VERSION: '1.1.8',
+  APP_VERSION: '1.1.9',
   APP_TAGLINE: 'Passionné BMW Z3',
   BACKUP_FILENAME: 'z3_copilot_backup.json',
   LOCATION_TASK_NAME: 'Z3_COPILOT_LOCATION_TRACKING',
-  
+
   VEHICLE_PROFILE_IMAGE: require('../../../assets/vehicles/z3/profile.png'),
-  
+
   ASSETS: {
     icon: './assets/vehicles/z3/icon.png',
     splash: './assets/vehicles/z3/splash.png',
     adaptiveIcon: './assets/vehicles/z3/adaptive-icon.png',
     favicon: './assets/vehicles/z3/favicon.png',
   },
-  
+
   BRAND_COLORS: {
     primary: '#0066B2',      // BMW Blue
     primaryDark: '#003366',
@@ -276,7 +276,7 @@ export const z3Config: VehicleConfig = {
     stopDuration: 300000,
     stationCheckInterval: 7200000,
     stationKeywords: [
-      'Station', 'Total', 'Shell', 'Esso', 'BP', 'Avia', 'Eni', 'Relais', 
+      'Station', 'Total', 'Shell', 'Esso', 'BP', 'Avia', 'Eni', 'Relais',
       'Garage', 'Carrefour', 'Leclerc', 'Intermarché', 'Super U', 'Auchan'
     ],
     notifications: {

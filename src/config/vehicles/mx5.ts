@@ -3,14 +3,14 @@ import { VehicleConfig } from './types';
 export const mx5Config: VehicleConfig = {
   APP_NAME: 'MX-5 Copilot',
   APP_SHORT_NAME: 'MX-5',
-  APP_VERSION: '1.1.8',
+  APP_VERSION: '1.1.9',
   APP_TAGLINE: 'Passionné Mazda MX-5',
   BACKUP_FILENAME: 'mx5_copilot_backup.json',
   LOCATION_TASK_NAME: 'MX5_COPILOT_LOCATION_TRACKING',
-  
+
   // Note: Il faudra ajouter l'image mx5_profile.png dans les assets
-  VEHICLE_PROFILE_IMAGE: require('../../../assets/vehicles/mx5/profile.png'), 
-  
+  VEHICLE_PROFILE_IMAGE: require('../../../assets/vehicles/mx5/profile.png'),
+
   ASSETS: {
     icon: './assets/vehicles/mx5/icon.png',
     splash: './assets/vehicles/mx5/splash.png',

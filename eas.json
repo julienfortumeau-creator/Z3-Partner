@@ -4,6 +4,36 @@
     "appVersionSource": "remote"
   },
   "build": {
+    "development-z3": {
+      "env": {
+        "EXPO_PUBLIC_VEHICLE_VARIANT": "z3"
+      },
+      "node": "22.11.0",
+      "distribution": "internal",
+      "ios": {
+        "image": "macos-sequoia-15.6-xcode-26.2"
+      }
+    },
+    "development-z4": {
+      "env": {
+        "EXPO_PUBLIC_VEHICLE_VARIANT": "z4"
+      },
+      "node": "22.11.0",
+      "distribution": "internal",
+      "ios": {
+        "image": "macos-sequoia-15.6-xcode-26.2"
+      }
+    },
+    "development-mx5": {
+      "env": {
+        "EXPO_PUBLIC_VEHICLE_VARIANT": "mx5"
+      },
+      "node": "22.11.0",
+      "distribution": "internal",
+      "ios": {
+        "image": "macos-sequoia-15.6-xcode-26.2"
+      }
+    },
     "development": {
       "node": "22.11.0",
       "distribution": "internal",
