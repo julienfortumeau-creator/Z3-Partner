@@ -142,7 +142,7 @@ export default function DashboardScreen() {
           style={styles.activeTripBanner}
         >
           <LinearGradient
-            colors={[colors.primary, '#1a73e8']}
+            colors={[colors.primary, colors.primaryDark]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
             style={styles.activeTripGradient}

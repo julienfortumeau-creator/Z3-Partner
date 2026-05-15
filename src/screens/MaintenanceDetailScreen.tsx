@@ -357,7 +357,7 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     borderWidth: 1.5,
     borderColor: colors.primary,
-    backgroundColor: 'rgba(0, 102, 178, 0.08)',
+    backgroundColor: colors.primary + '14',
   },
   updateButtonText: {
     color: colors.primary,

@@ -226,13 +226,13 @@ export default function StatsScreen() {
         <View style={styles.mileageStatsRow}>
           <TouchableOpacity activeOpacity={0.9} style={styles.mileageCardContainer}>
             <LinearGradient
-              colors={['#2c3e50', '#000000']}
+              colors={[colors.primaryDark, '#000000']}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
               style={styles.mileageCard}
             >
               <View style={styles.statItem}>
-                <View style={[styles.iconContainer, { backgroundColor: 'rgba(52, 152, 219, 0.2)' }]}>
+                <View style={[styles.iconContainer, { backgroundColor: colors.primary + '20' }]}>
                   <Navigation size={28} color={colors.primary} />
                 </View>
                 <View style={styles.statContent}>
@@ -332,8 +332,8 @@ export default function StatsScreen() {
               width={width - 80}
               color={colors.primary}
               thickness={3}
-              startFillColor="rgba(0, 102, 178, 0.3)"
-              endFillColor="rgba(0, 102, 178, 0.01)"
+              startFillColor={colors.primary + '40'}
+              endFillColor={colors.primary + '05'}
               startOpacity={0.4}
               endOpacity={0.1}
               noOfSections={3}

@@ -6,13 +6,15 @@ import { colors, spacing, typography } from '../theme/colors';
 import { APP_NAME, APP_VERSION, APP_TAGLINE, UI_TEXTS } from '../config/vehicles';
 import { GlassCard } from '../components/common/GlassCard';
 import { LinearGradient } from 'expo-linear-gradient';
-import { MapPin, Bell, LogOut, ChevronRight, User, ShieldCheck, Mail, Building2, FileText, Download, Share2, Heart, BookOpen } from 'lucide-react-native';
+import { 
+  MapPin, Bell, LogOut, ChevronRight, User, ShieldCheck, Mail, 
+  Building2, FileText, Download, Share2, Heart, BookOpen, Activity, Car, Settings as SettingsIcon 
+} from 'lucide-react-native';
 import { exportData, importData } from '../services/backupService';
 import { generateMaintenancePDF } from '../utils/pdfGenerator';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../navigation/MainNavigator';
-import { Bug } from 'lucide-react-native';
+import type { RootStackParamList } from '../navigation/MainNavigator';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function SettingsScreen() {
@@ -156,7 +158,7 @@ export default function SettingsScreen() {
         <GlassCard style={styles.menuContainer}>
           <MenuLink 
             label="Voir les logs GPS" 
-            icon={Bug} 
+            icon={Activity} 
             onPress={showGPSLogs}
           />
         </GlassCard>
@@ -187,13 +189,13 @@ export default function SettingsScreen() {
           <View style={styles.divider} />
           <MenuLink 
             label="Modifier le profil véhicule" 
-            icon={({ color, size }: any) => <MaterialCommunityIcons name="steering" size={size} color={color} />} 
+            icon={Car} 
             onPress={() => navigation.navigate('Onboarding' as any)}
           />
           <View style={styles.divider} />
           <MenuLink 
             label="Réglages expert" 
-            icon={Settings} 
+            icon={SettingsIcon} 
             onPress={() => navigation.navigate('ExpertSettings' as any)}
           />
           <View style={styles.divider} />

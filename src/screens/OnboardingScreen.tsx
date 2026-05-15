@@ -497,7 +497,7 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
   infoCard: {
-    backgroundColor: 'rgba(0, 102, 178, 0.05)',
+    backgroundColor: colors.primary + '0D',
     padding: spacing.md,
     marginBottom: spacing.lg,
     borderLeftWidth: 3,

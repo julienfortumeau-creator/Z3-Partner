@@ -1,3 +1,5 @@
+import { BRAND_COLORS } from '../config/vehicles';
+
 export const colors = {
   background: '#050505', // Deep Black
   surface: '#121212', // Anthracite
@@ -5,11 +7,11 @@ export const colors = {
   card: '#181818',
   border: '#2A2A2A',
   
-  // BMW M-Sport Accents
-  primary: '#0066B2', // BMW Blue
-  primaryDark: '#003366',
-  accent: '#E63946', // BMW Red
-  secondary: '#87CEEB', // Sky Blue
+  // Dynamic Brand Colors
+  primary: BRAND_COLORS.primary,
+  primaryDark: BRAND_COLORS.primaryDark,
+  accent: BRAND_COLORS.accent,
+  secondary: BRAND_COLORS.accent, // Use accent as secondary fallback
   
   // Standard UI
   textPrimary: '#FFFFFF',

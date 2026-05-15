@@ -247,7 +247,7 @@ export default function HistoryScreen() {
                 isToday 
                   ? [colors.primary, colors.primaryDark]
                   : isEmptyCta
-                    ? [colors.secondary, '#004A7F']
+                    ? [colors.primary, colors.primaryDark]
                     : ['#3a3a3a', '#1a1a1a']
               }
               start={{ x: 0, y: 0 }}
