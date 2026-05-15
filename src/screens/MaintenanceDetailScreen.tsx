@@ -86,7 +86,7 @@ export default function MaintenanceDetailScreen() {
         <View style={styles.engineNotice}>
           <Info size={20} color={colors.primary} />
           <Text style={styles.engineNoticeText}>
-            Planning optimisé pour moteur <Text style={{fontWeight: '700'}}>{ENGINE_TYPE_LABELS[engineType]}</Text>.
+            Planning optimisé pour moteur <Text style={{fontWeight: '700'}}>{ENGINE_TYPE_LABELS[engineType] || engineType}</Text>.
           </Text>
         </View>
 

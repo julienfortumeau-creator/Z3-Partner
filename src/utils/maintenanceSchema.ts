@@ -25,7 +25,7 @@ export const MAINTENANCE_BASE = MAINTENANCE_ITEMS;
 
 export const getMaintenanceSchema = (model: string, customIntervals?: Record<string, { km?: number; years?: number }>): DetailedMaintenanceItem[] => {
   const engineType = detectEngineType(model);
-  const data = MAINTENANCE_SCHEMA[engineType];
+  const data = MAINTENANCE_SCHEMA[engineType] || {};
   
   return MAINTENANCE_ITEMS.map(base => {
     const custom = customIntervals?.[base.id];

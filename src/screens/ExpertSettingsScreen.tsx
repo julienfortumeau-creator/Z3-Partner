@@ -22,7 +22,7 @@ import {
 import { 
   ChevronLeft, Settings, Activity, Disc, Thermometer, Zap, Wind, Fuel, 
   ZapOff, RefreshCcw, RefreshCw, CircleDashed, Battery as BatteryIcon, Circle,
-  ArrowUpDown, Layers
+  ArrowUpDown, Layers, ShieldAlert, Umbrella
 } from 'lucide-react-native';
 import { getMaintenanceSchema } from '../utils/maintenanceSchema';
 
@@ -43,6 +43,8 @@ const getIcon = (name: string) => {
     'refresh-cw': RefreshCw,
     'battery': BatteryIcon,
     'circle': Circle,
+    'shield-alert': ShieldAlert,
+    'umbrella': Umbrella,
   };
   return map[name] || Activity;
 };
@@ -55,6 +57,8 @@ export default function ExpertSettingsScreen() {
 
   const [customIntervals, setCustomIntervals] = useState<Record<string, { km: string, years: string }>>(() => {
     const state: Record<string, { km: string, years: string }> = {};
+    if (!profile) return state;
+
     const schema = getMaintenanceSchema(profile.model);
     
     MAINTENANCE_ITEMS.forEach(item => {
@@ -67,6 +71,23 @@ export default function ExpertSettingsScreen() {
     });
     return state;
   });
+
+  // Re-synchroniser si le profil change (ex: après hydratation)
+  React.useEffect(() => {
+    if (profile && Object.keys(customIntervals).length === 0) {
+      const state: Record<string, { km: string, years: string }> = {};
+      const schema = getMaintenanceSchema(profile.model);
+      MAINTENANCE_ITEMS.forEach(item => {
+        const custom = profile.customMaintenanceIntervals?.[item.id];
+        const defaultValue = schema.find(s => s.id === item.id);
+        state[item.id] = {
+          km: custom?.km?.toString() ?? defaultValue?.intervalKm?.toString() ?? '',
+          years: custom?.years?.toString() ?? defaultValue?.intervalYears?.toString() ?? '',
+        };
+      });
+      setCustomIntervals(state);
+    }
+  }, [profile]);
 
   const handleSave = () => {
     const customMaintenanceIntervals: Record<string, { km?: number; years?: number }> = {};
@@ -124,7 +145,7 @@ export default function ExpertSettingsScreen() {
                   <View style={{ flex: 1 }}>
                     <InputField 
                       label="Intervalle (km)" 
-                      value={customIntervals[item.id].km} 
+                      value={customIntervals[item.id]?.km || ''} 
                       onChange={(t: string) => setCustomIntervals({
                         ...customIntervals,
                         [item.id]: { ...customIntervals[item.id], km: t }
@@ -137,7 +158,7 @@ export default function ExpertSettingsScreen() {
                   <View style={{ flex: 1 }}>
                     <InputField 
                       label="Intervalle (ans)" 
-                      value={customIntervals[item.id].years} 
+                      value={customIntervals[item.id]?.years || ''} 
                       onChange={(t: string) => setCustomIntervals({
                         ...customIntervals,
                         [item.id]: { ...customIntervals[item.id], years: t }

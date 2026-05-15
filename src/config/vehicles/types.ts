@@ -1,4 +1,4 @@
-export type EngineType = '4cyl' | '6cyl' | 'M';
+export type EngineType = '3cyl' | '4cyl' | '5cyl' | '6cyl' | 'v8' | 'v10' | 'v12' | 'M';
 
 export interface MaintenanceItemConfig {
   id: string;
@@ -46,10 +46,10 @@ export interface VehicleConfig {
   };
   VEHICLE_MODELS: string[];
   VEHICLE_YEARS: string[];
-  ENGINE_TYPE_LABELS: Record<EngineType, string>;
+  ENGINE_TYPE_LABELS: Partial<Record<EngineType, string>>;
   detectEngineType: (model: string) => EngineType;
   MAINTENANCE_ITEMS: MaintenanceItemConfig[];
-  MAINTENANCE_SCHEMA: Record<EngineType, Record<string, MaintenanceInterval>>;
+  MAINTENANCE_SCHEMA: Partial<Record<EngineType, Record<string, MaintenanceInterval>>>;
   HEALTH_STEPS_CONFIG: HealthStepConfig[];
   COMMUNITY_LINKS: { name: string; url: string }[];
   LEGAL_TEXTS: {
