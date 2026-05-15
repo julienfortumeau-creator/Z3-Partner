@@ -26,7 +26,7 @@ import {
   Car, Calendar, Gauge, Euro, Shield, Disc, Thermometer, Zap, 
   ChevronLeft, Activity, Wind, Fuel, Wrench, Layers, 
   ArrowUpDown, ZapOff, Droplets, Battery as BatteryIcon, Circle, Settings, RefreshCcw,
-  RefreshCw, ShieldAlert, CircleDashed
+  RefreshCw, ShieldAlert, CircleDashed, Umbrella, CheckCircle2
 } from 'lucide-react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -59,6 +59,10 @@ const getIcon = (name: string) => {
     'shield-alert': ShieldAlert,
     'battery': BatteryIcon,
     'circle': Circle,
+    'umbrella': Umbrella,
+    'Umbrella': Umbrella,
+    'RefreshCcw': RefreshCcw,
+    'Settings': Settings,
   };
   return map[name] || HelpCircle;
 };
@@ -98,8 +102,13 @@ export default function OnboardingScreen() {
     return initialState;
   });
 
+  const HEALTH_STEPS_COUNT = HEALTH_STEPS_CONFIG.length;
+  const INVESTMENT_STEP = HEALTH_STEPS_COUNT + 2;
+  const LEGAL_STEP = HEALTH_STEPS_COUNT + 3;
+  const TOTAL_STEPS = LEGAL_STEP;
+
   const handleNext = () => {
-    if (step === 11) {
+    if (step === TOTAL_STEPS) {
       handleStart();
     } else {
       setStep(step + 1);
@@ -305,9 +314,9 @@ export default function OnboardingScreen() {
             <Text style={styles.title}>{currentProfile ? 'Modifier Profil' : APP_NAME}</Text>
             <View style={styles.progressContainer}>
               <View style={styles.progressBar}>
-                <View style={[styles.progressFill, { width: `${(step / 11) * 100}%` }]} />
+                <View style={[styles.progressFill, { width: `${(step / TOTAL_STEPS) * 100}%` }]} />
               </View>
-              <Text style={styles.stepCounter}>Étape {step} / 11</Text>
+              <Text style={styles.stepCounter}>Étape {step} / {TOTAL_STEPS}</Text>
             </View>
           </View>
 
@@ -397,9 +406,9 @@ export default function OnboardingScreen() {
                 </Modal>
               )}
             </>
-          ) : step === 10 ? (
+          ) : step === INVESTMENT_STEP ? (
             renderInvestmentStep()
-          ) : step === 11 ? (
+          ) : step === LEGAL_STEP ? (
             renderLegalStep()
           ) : (
             renderHealthStep()
@@ -409,14 +418,14 @@ export default function OnboardingScreen() {
             {step > 1 && (
               <TouchableOpacity style={styles.backButton} onPress={handleBack}>
                 <ChevronLeft color={colors.textSecondary} size={24} />
-                {step !== 11 && <Text style={styles.backText}>Retour</Text>}
+                {step !== LEGAL_STEP && <Text style={styles.backText}>Retour</Text>}
               </TouchableOpacity>
             )}
             <PremiumButton 
-              title={step === 11 ? "J'accepte et je termine" : "Suivant"} 
+              title={step === LEGAL_STEP ? "J'accepte et je termine" : "Suivant"} 
               onPress={handleNext} 
               style={styles.flexButton}
-              textStyle={step === 11 ? { fontSize: 16 } : undefined}
+              textStyle={step === LEGAL_STEP ? { fontSize: 16 } : undefined}
             />
           </View>
         </ScrollView>
