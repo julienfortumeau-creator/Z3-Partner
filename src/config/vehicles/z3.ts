@@ -18,9 +18,9 @@ export const z3Config: VehicleConfig = {
   },
 
   BRAND_COLORS: {
-    primary: '#0066B2',      // BMW Blue
+    primary: '#0066B2', // BMW Blue
     primaryDark: '#003366',
-    accent: '#E63946',       // BMW Red
+    accent: '#E63946', // BMW Red
   },
 
   VEHICLE_MODELS: [
@@ -80,6 +80,7 @@ export const z3Config: VehicleConfig = {
     { id: 'cooling_system', label: 'Radiateur + vase expansion', typeLabel: 'Entretien & réparation', category: 'maintenance', icon: 'shield-alert' },
     { id: 'coolant', label: 'Liquide refroidissement', typeLabel: 'Entretien & réparation', category: 'maintenance', icon: 'droplets' },
     { id: 'timing', label: 'Chaîne / tendeur', typeLabel: 'Entretien & réparation', category: 'maintenance', icon: 'settings' },
+    { id: 'soft_top', label: 'Entretien Capote', typeLabel: 'Entretien & réparation', category: 'other', icon: 'umbrella' },
     { id: 'battery', label: 'Batterie', typeLabel: 'Entretien & réparation', category: 'other', icon: 'battery' },
     { id: 'tires_front', label: 'Pneus AV (avant)', typeLabel: 'Entretien & réparation', category: 'safety', icon: 'circle' },
     { id: 'tires_rear', label: 'Pneus AR (arrière)', typeLabel: 'Entretien & réparation', category: 'safety', icon: 'circle' },
@@ -110,6 +111,7 @@ export const z3Config: VehicleConfig = {
       cooling_system: { km: 150000, detail: 'Vieillissement', cost: '400 – 800 €' },
       coolant: { years: 4, detail: 'Standard', cost: '80 – 150 €' },
       timing: { km: 200000, detail: 'Faible risque', cost: '300 – 1 000 €' },
+      soft_top: { years: 1, detail: 'Imperméabilisation + nettoyage drains', cost: '30 – 100 €' },
       battery: { years: 6, detail: 'Simple', cost: '100 – 250 €' },
       tires_front: { km: 35000, detail: 'Usure faible', cost: '200 – 500 €' },
       tires_rear: { km: 25000, detail: 'Propulsion', cost: '250 – 600 €' },
@@ -138,6 +140,7 @@ export const z3Config: VehicleConfig = {
       cooling_system: { km: 110000, detail: '🔴 Fragile', cost: '400 – 800 €' },
       coolant: { years: 4, detail: '🔴', cost: '80 – 150 €' },
       timing: { km: 200000, detail: 'Tendeur', cost: '300 – 1 000 €' },
+      soft_top: { years: 1, detail: 'Nettoyage des drains + imperméabilisation', cost: '30 – 100 €' },
       battery: { years: 5, detail: '+ équipements', cost: '100 – 250 €' },
       tires_front: { km: 30000, detail: 'Direction', cost: '200 – 500 €' },
       tires_rear: { km: 20000, detail: 'Couple élevé', cost: '250 – 600 €' },
@@ -166,10 +169,12 @@ export const z3Config: VehicleConfig = {
       cooling_system: { km: 100000, detail: '🔴', cost: '400 – 800 €' },
       coolant: { years: 3, detail: '🔴', cost: '80 – 150 €' },
       timing: { km: 150000, detail: '🔴 VANOS', cost: '300 – 1 000 €' },
+      soft_top: { years: 1, detail: 'Contrôle capote, joints et drains', cost: '30 – 100 €' },
       battery: { years: 4, detail: '', cost: '100 – 250 €' },
       tires_front: { km: 25000, detail: '🔴', cost: '200 – 500 €' },
       tires_rear: { km: 15000, detail: '🔴', cost: '250 – 600 €' },
-    }
+    },
+
   },
 
   HEALTH_STEPS_CONFIG: [
@@ -182,6 +187,7 @@ export const z3Config: VehicleConfig = {
       priorityLevel: 'high',
       itemIds: ['oil', 'spark_plugs', 'air_filter', 'timing', 'fuel_filter'],
     },
+
     {
       title: 'Système de refroidissement',
       description: 'Point faible connu des BMW E36/E37.',
@@ -191,6 +197,7 @@ export const z3Config: VehicleConfig = {
       priorityLevel: 'critical',
       itemIds: ['water_pump', 'thermostat', 'cooling_system', 'coolant'],
     },
+
     {
       title: 'Transmission & embrayage',
       description: 'Passage de puissance aux roues.',
@@ -200,6 +207,7 @@ export const z3Config: VehicleConfig = {
       priorityLevel: 'high',
       itemIds: ['gearbox_oil', 'differential_oil', 'clutch', 'accessory_belt', 'pulleys'],
     },
+
     {
       title: 'Trains roulants & suspension',
       description: 'Tenue de route et comportement.',
@@ -209,6 +217,7 @@ export const z3Config: VehicleConfig = {
       priorityLevel: 'critical',
       itemIds: ['shocks', 'bushings'],
     },
+
     {
       title: 'Système de freinage',
       description: 'Sécurité avant tout.',
@@ -218,6 +227,7 @@ export const z3Config: VehicleConfig = {
       priorityLevel: 'critical',
       itemIds: ['brake_fluid', 'brake_pads_front', 'brake_pads_rear', 'brake_discs_front', 'brake_discs_rear'],
     },
+
     {
       title: 'Confort & habitacle',
       description: 'Qualité de vie à bord.',
@@ -227,6 +237,17 @@ export const z3Config: VehicleConfig = {
       priorityLevel: 'low',
       itemIds: ['cabin_filter', 'ac_recharge'],
     },
+
+    {
+      title: 'Capote & Étanchéité',
+      description: 'Entretien du toit souple et drains.',
+      enjeu: 'Éviter la corrosion interne.',
+      priority: 'Spécifique Cabriolet : très important.',
+      iconName: 'Umbrella',
+      priorityLevel: 'high',
+      itemIds: ['soft_top'],
+    },
+
     {
       title: 'Électricité & énergie',
       description: 'Démarrage et alimentation.',
@@ -236,6 +257,7 @@ export const z3Config: VehicleConfig = {
       priorityLevel: 'high',
       itemIds: ['battery'],
     },
+
     {
       title: 'Pneumatiques',
       description: 'Liaison au sol.',
@@ -284,35 +306,36 @@ export const z3Config: VehicleConfig = {
       tripEndBody: (kms: number) => `Vous avez parcouru ${kms} km. Mettre à jour votre compteur ?`,
       stationTitle: "Station service détectée ⛽",
       stationBody: (name: string) => `${name || 'Une station'} a été détectée. Ajouter un plein ?`,
-    }
-  },
 
-  BACKUP_TEXTS: {
-    exportError: "Impossible d'exporter les données.",
-    importError: "Le fichier de sauvegarde est corrompu ou invalide.",
-    importInvalidFormat: "Format de fichier invalide",
-    importConfirmTitle: "Restaurer la sauvegarde ?",
-    importConfirmBody: "Cette action remplacera toutes vos données actuelles par celles du fichier de sauvegarde. Voulez-vous continuer ?",
-    importSuccess: "Votre historique a été restauré avec succès.",
-  },
+    },
 
-  UI_TEXTS: {
-    activeTripBanner: "Trajet Auto-Log en cours...",
-    greeting: "Bonjour, Passionné",
-    updateMileage: "Mettre à jour",
-    optimalStatus: "Optimal",
-    maintenanceStatus: "Entretien",
-    lastLogs: "GPS Logs (50 derniers)",
-    noLogs: "Aucun log enregistré pour le moment.",
-    gpsLogsTitle: "GPS Logs",
-    gpsDisabledTitle: "Auto-Log Désactivé",
-    gpsDisabledBody: "Le suivi automatique est maintenant désactivé dans l'application. Pour une confidentialité totale, vous pouvez également révoquer l'accès à la position dans les réglages de votre iPhone.",
-    iphoneSettings: "Réglages iPhone",
-    logoutTitle: "Déconnexion",
-    logoutConfirm: "Voulez-vous vraiment vous déconnecter ? Les données locales seront conservées.",
-    cancel: "Annuler",
-    errorTitle: "Erreur",
-    pdfError: "Impossible de générer le document PDF.",
-    logsError: "Impossible de lire les logs.",
+    BACKUP_TEXTS: {
+      exportError: "Impossible d'exporter les données.",
+      importError: "Le fichier de sauvegarde est corrompu ou invalide.",
+      importInvalidFormat: "Format de fichier invalide",
+      importConfirmTitle: "Restaurer la sauvegarde ?",
+      importConfirmBody: "Cette action remplacera toutes vos données actuelles par celles du fichier de sauvegarde. Voulez-vous continuer ?",
+      importSuccess: "Votre historique a été restauré avec succès.",
+    },
+
+    UI_TEXTS: {
+      activeTripBanner: "Trajet Auto-Log en cours...",
+      greeting: "Bonjour, Passionné",
+      updateMileage: "Mettre à jour",
+      optimalStatus: "Optimal",
+      maintenanceStatus: "Entretien",
+      lastLogs: "GPS Logs (50 derniers)",
+      noLogs: "Aucun log enregistré pour le moment.",
+      gpsLogsTitle: "GPS Logs",
+      gpsDisabledTitle: "Auto-Log Désactivé",
+      gpsDisabledBody: "Le suivi automatique est maintenant désactivé dans l'application. Pour une confidentialité totale, vous pouvez également révoquer l'accès à la position dans les réglages de votre iPhone.",
+      iphoneSettings: "Réglages iPhone",
+      logoutTitle: "Déconnexion",
+      logoutConfirm: "Voulez-vous vraiment vous déconnecter ? Les données locales seront conservées.",
+      cancel: "Annuler",
+      errorTitle: "Erreur",
+      pdfError: "Impossible de générer le document PDF.",
+      logsError: "Impossible de lire les logs.",
+    },
   },
 };
