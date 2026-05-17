@@ -57,7 +57,7 @@
         "image": "macos-sequoia-15.6-xcode-26.2"
       },
       "android": {
-        "buildType": "apk"
+        "buildType": "app-bundle"
       }
     },
     "production-z4": {
@@ -69,7 +69,7 @@
         "image": "macos-sequoia-15.6-xcode-26.2"
       },
       "android": {
-        "buildType": "apk"
+        "buildType": "app-bundle"
       }
     },
     "production-mx5": {
@@ -81,7 +81,7 @@
         "image": "macos-sequoia-15.6-xcode-26.2"
       },
       "android": {
-        "buildType": "apk"
+        "buildType": "app-bundle"
       }
     },
     "production": {
@@ -90,7 +90,7 @@
         "image": "macos-sequoia-15.6-xcode-26.2"
       },
       "android": {
-        "buildType": "apk"
+        "buildType": "app-bundle"
       }
     }
   },
