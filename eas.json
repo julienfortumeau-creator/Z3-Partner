@@ -96,8 +96,20 @@
   },
   "submit": {
     "production": {},
-    "production-z3": {},
-    "production-z4": {},
-    "production-mx5": {}
+    "production-z3": {
+      "ios": {
+        "ascAppId": "6762408360"
+      }
+    },
+    "production-z4": {
+      "ios": {
+        "ascAppId": "6769289224"
+      }
+    },
+    "production-mx5": {
+      "ios": {
+        "ascAppId": "6769314021"
+      }
+    }
   }
 }
