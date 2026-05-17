@@ -192,13 +192,7 @@ export default function SettingsScreen() {
             icon={Car} 
             onPress={() => navigation.navigate('Onboarding' as any)}
           />
-          <View style={styles.divider} />
-          <MenuLink 
-            label="Réglages expert" 
-            icon={SettingsIcon} 
-            onPress={() => navigation.navigate('ExpertSettings' as any)}
-          />
-          <View style={styles.divider} />
+
           <MenuLink 
             label={isExporting ? "Génération en cours..." : "Exporter l'historique (PDF)"} 
             icon={FileText} 
